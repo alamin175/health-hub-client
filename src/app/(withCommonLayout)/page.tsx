@@ -1,5 +1,6 @@
 import HeroSection from "@/components/Ui/Homepage/HeroSection/HeroSection";
 import Specialist from "@/components/Ui/Homepage/Specialist/Specialist";
+import TopRatedDoctor from "@/components/Ui/Homepage/TopRatedDoctor/TopRatedDoctor";
 import { Button } from "@mui/material";
 
 const HomePage = () => {
@@ -9,6 +10,7 @@ const HomePage = () => {
             <Button >Contained</Button> */}
       <HeroSection />
       <Specialist />
+      <TopRatedDoctor />
     </div>
   );
 };
