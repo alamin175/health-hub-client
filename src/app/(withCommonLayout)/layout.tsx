@@ -1,10 +1,10 @@
-import Footer from '@/components/Ui/Shared/Footer/Footer'
-import Navbar from '@/components/Ui/Shared/Navbar/Navbar'
+import Footer from '@/components/Shared/Footer/Footer'
+import Navbar from '@/components/Shared/Navbar/Navbar'
 import React from 'react'
 
 const CommonLayout = ({children}: {children: React.ReactNode}) => {
   return (
-    <div>
+    <div className='bg-white'>
         <Navbar/>
         <div className='min-h-screen'>{children}</div>
         <Footer/>
