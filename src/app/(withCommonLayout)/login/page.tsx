@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import LoginIcon from "@mui/icons-material/Login";
 import React from "react";
 import Link from "next/link";
 
@@ -32,7 +32,7 @@ const Login = () => {
           }}
         >
           <Box display="flex" alignItems="center" color="primary.main" gap={2}>
-            <AppRegistrationIcon sx={{ fontSize: 40 }} />
+            <LoginIcon sx={{ fontSize: 40 }} />
             <Typography
               fontWeight={700}
               color="secondary.main"
@@ -74,9 +74,13 @@ const Login = () => {
                   }}
                 />
               </Box>
+              <Typography textAlign="end" mt={-1} mb={2} color="red">
+                <Link href="/register">Forgot password?</Link>
+              </Typography>
               <Button fullWidth sx={{ my: 1 }}>
                 Login
               </Button>
+              my={2}
               <Typography textAlign="center" my={2}>
                 Don&apos;t have an account?{" "}
                 <Link color="primary.main" href="/register">
