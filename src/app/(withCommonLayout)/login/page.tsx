@@ -12,7 +12,7 @@ import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import React from "react";
 import Link from "next/link";
 
-const Register = () => {
+const Login = () => {
   return (
     <Container>
       <Stack
@@ -39,7 +39,7 @@ const Register = () => {
               variant="h4"
               component="h2"
             >
-              Patient Register
+              Patient Login
             </Typography>
           </Box>
 
@@ -54,21 +54,10 @@ const Register = () => {
                 }}
               >
                 <TextField
-                  label="Name"
-                  variant="outlined"
-                  fullWidth
-                  sx={{
-                    color: "secondary.dark",
-                    "& label": { color: "secondary.dark" },
-                    gridColumn: "span 2",
-                  }}
-                />
-
-                <TextField
                   label="Email"
                   variant="outlined"
-                  type="email"
                   fullWidth
+                  type="email"
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -84,34 +73,14 @@ const Register = () => {
                     "& label": { color: "secondary.dark" },
                   }}
                 />
-
-                <TextField
-                  label="Contact Number"
-                  variant="outlined"
-                  fullWidth
-                  type="number"
-                  sx={{
-                    color: "secondary.dark",
-                    "& label": { color: "secondary.dark" },
-                  }}
-                />
-                <TextField
-                  label="Address"
-                  variant="outlined"
-                  fullWidth
-                  sx={{
-                    color: "secondary.dark",
-                    "& label": { color: "secondary.dark" },
-                  }}
-                />
               </Box>
               <Button fullWidth sx={{ my: 1 }}>
-                Register
+                Login
               </Button>
               <Typography textAlign="center" my={2}>
-                Do you already have an account?{" "}
-                <Link color="primary.main" href="/login">
-                  Login
+                Don&apos;t have an account?{" "}
+                <Link color="primary.main" href="/register">
+                  Register
                 </Link>
               </Typography>
             </Box>
@@ -122,4 +91,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
