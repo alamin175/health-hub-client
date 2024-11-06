@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Button,
@@ -11,8 +12,32 @@ import Image from "next/image";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import React from "react";
 import Link from "next/link";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { modifyPayload } from "@/utils/modifyPayload";
+
+interface PatientData {
+  name: string;
+  email: string;
+  number: string;
+  address: string;
+}
+
+interface PatientFormData {
+  password: string;
+  patient: PatientData;
+}
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<PatientFormData>();
+  const onSubmit: SubmitHandler<PatientFormData> = (values) => {
+    const data = modifyPayload(values);
+    console.log(data);
+  };
   return (
     <Container>
       <Stack
@@ -43,7 +68,7 @@ const Register = () => {
             </Typography>
           </Box>
 
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box>
               <Box
                 sx={{
@@ -57,6 +82,7 @@ const Register = () => {
                   label="Name"
                   variant="outlined"
                   fullWidth
+                  {...register("patient.name")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -69,6 +95,7 @@ const Register = () => {
                   variant="outlined"
                   type="email"
                   fullWidth
+                  {...register("patient.email")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -79,6 +106,7 @@ const Register = () => {
                   variant="outlined"
                   fullWidth
                   type="password"
+                  {...register("password")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -90,6 +118,7 @@ const Register = () => {
                   variant="outlined"
                   fullWidth
                   type="number"
+                  {...register("patient.number")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -99,13 +128,14 @@ const Register = () => {
                   label="Address"
                   variant="outlined"
                   fullWidth
+                  {...register("patient.address")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
                   }}
                 />
               </Box>
-              <Button fullWidth sx={{ my: 1 }}>
+              <Button type="submit" fullWidth sx={{ my: 1 }}>
                 Register
               </Button>
               <Typography textAlign="center" my={2}>

@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Button,
@@ -11,8 +12,22 @@ import Image from "next/image";
 import LoginIcon from "@mui/icons-material/Login";
 import React from "react";
 import Link from "next/link";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+type Inputs = {
+  example: string;
+  exampleRequired: string;
+};
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
   return (
     <Container>
       <Stack
@@ -43,7 +58,7 @@ const Login = () => {
             </Typography>
           </Box>
 
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box>
               <Box
                 sx={{
@@ -58,6 +73,7 @@ const Login = () => {
                   variant="outlined"
                   fullWidth
                   type="email"
+                  {...register("email")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -68,6 +84,7 @@ const Login = () => {
                   variant="outlined"
                   fullWidth
                   type="password"
+                  {...register("password")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -77,10 +94,9 @@ const Login = () => {
               <Typography textAlign="end" mt={-1} mb={2} color="red">
                 <Link href="/register">Forgot password?</Link>
               </Typography>
-              <Button fullWidth sx={{ my: 1 }}>
+              <Button type="submit" fullWidth sx={{ my: 1 }}>
                 Login
               </Button>
-              my={2}
               <Typography textAlign="center" my={2}>
                 Don&apos;t have an account?{" "}
                 <Link color="primary.main" href="/register">

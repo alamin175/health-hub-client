@@ -39,7 +39,9 @@ const Navbar = () => {
             NGOs
           </Typography>
         </Stack>
-        <Button>Login</Button>
+        <Link href="/login">
+          <Button>Login</Button>
+        </Link>
       </Stack>
     </Container>
   );
