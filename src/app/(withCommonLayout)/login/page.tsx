@@ -36,7 +36,6 @@ const Login = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       const info = await userLogin(data);
-      console.log(info);
       if (info?.success) {
         toast.success(info?.message);
         if (info?.data?.accessToken) {

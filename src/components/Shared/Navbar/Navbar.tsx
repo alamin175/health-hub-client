@@ -1,20 +1,15 @@
 "use client";
-import { authKey } from "@/constance/authKey";
-import { getUser } from "@/utils/getUser";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+// import AuthButton from "@/components/Ui/AuthButton/AuthButton";
 import { Container } from "@mui/material";
 import Link from "next/link";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 const Navbar = () => {
-  const router = useRouter();
-  const user = getUser();
-  console.log(user);
-  const handleLogOut = () => {
-    Cookies.remove(authKey);
-    router.push("/login");
-  };
+  const AuthButton = dynamic(
+    () => import("@/components/Ui/AuthButton/AuthButton"),
+    { ssr: false }
+  );
   return (
     <Container maxWidth="xl" sx={{ py: 2 }}>
       <Stack
@@ -53,15 +48,7 @@ const Navbar = () => {
             NGOs
           </Typography>
         </Stack>
-        {user?.userId ? (
-          <Button onClick={handleLogOut} color="error">
-            Logout
-          </Button>
-        ) : (
-          <Link href="/login">
-            <Button>Login</Button>
-          </Link>
-        )}
+        <AuthButton />
       </Stack>
     </Container>
   );

@@ -17,6 +17,9 @@ import { modifyPayload } from "@/utils/modifyPayload";
 import { registerPatient } from "@/service/actions/patientRegister";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { authKey } from "@/constance/authKey";
+import { userLogin } from "@/service/actions/userLogin";
+import Cookies from "js-cookie";
 
 interface PatientData {
   name: string;
@@ -42,13 +45,25 @@ const Register = () => {
     const data = modifyPayload(values);
     try {
       const res = await registerPatient(data);
-      if (res?.success) {
-        toast.success(res?.message);
-        router.push("/login");
-      } else {
-        toast.error(res?.message);
-      }
       console.log(res);
+      if (res?.success) {
+        // toast.success(res?.message);
+        const info = await userLogin({
+          email: values.patient.email,
+          password: values.password,
+        });
+        console.log(info);
+        if (info?.success) {
+          toast.success("Patient created successfully");
+          if (info?.data?.accessToken) {
+            Cookies.set(authKey, info?.data?.accessToken);
+          }
+          router.push("/");
+        } else {
+          toast.error(res?.message);
+        }
+        console.log(res);
+      }
     } catch (err: any) {
       console.error(err.message);
     }
