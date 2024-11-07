@@ -17,6 +17,8 @@ import { userLogin } from "@/service/actions/userLogin";
 import { toast } from "sonner";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { authKey } from "@/constance/authKey";
 
 export type FormValues = {
   email: string;
@@ -37,9 +39,12 @@ const Login = () => {
       console.log(info);
       if (info?.success) {
         toast.success(info?.message);
+        if (info?.data?.accessToken) {
+          Cookies.set(authKey, info?.data?.accessToken);
+        }
         router.push("/");
       } else {
-        toast.error("Login failed. Please check your credentials.");
+        toast.error(info?.message);
       }
     } catch (err: any) {
       console.error(err.message);

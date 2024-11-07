@@ -45,6 +45,8 @@ const Register = () => {
       if (res?.success) {
         toast.success(res?.message);
         router.push("/login");
+      } else {
+        toast.error(res?.message);
       }
       console.log(res);
     } catch (err: any) {
