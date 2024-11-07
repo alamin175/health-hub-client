@@ -14,11 +14,14 @@ import React from "react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { modifyPayload } from "@/utils/modifyPayload";
+import { registerPatient } from "@/service/actions/patientRegister";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface PatientData {
   name: string;
   email: string;
-  number: string;
+  contactNumber: string;
   address: string;
 }
 
@@ -28,15 +31,25 @@ interface PatientFormData {
 }
 
 const Register = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<PatientFormData>();
-  const onSubmit: SubmitHandler<PatientFormData> = (values) => {
+  const onSubmit: SubmitHandler<PatientFormData> = async (values) => {
     const data = modifyPayload(values);
-    console.log(data);
+    try {
+      const res = await registerPatient(data);
+      if (res?.success) {
+        toast.success(res?.message);
+        router.push("/login");
+      }
+      console.log(res);
+    } catch (err: any) {
+      console.error(err.message);
+    }
   };
   return (
     <Container>
@@ -118,7 +131,7 @@ const Register = () => {
                   variant="outlined"
                   fullWidth
                   type="number"
-                  {...register("patient.number")}
+                  {...register("patient.contactNumber")}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -140,7 +153,7 @@ const Register = () => {
               </Button>
               <Typography textAlign="center" my={2}>
                 Do you already have an account?{" "}
-                <Link color="primary.main" href="/login">
+                <Link className="text-red-600" href="/login">
                   Login
                 </Link>
               </Typography>

@@ -13,21 +13,38 @@ import LoginIcon from "@mui/icons-material/Login";
 import React from "react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { userLogin } from "@/service/actions/userLogin";
+import { toast } from "sonner";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
-type Inputs = {
-  example: string;
-  exampleRequired: string;
+export type FormValues = {
+  email: string;
+  password: string;
 };
 
 const Login = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-
+  } = useForm<FormValues>();
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      const info = await userLogin(data);
+      console.log(info);
+      if (info?.success) {
+        toast.success(info?.message);
+        router.push("/");
+      } else {
+        toast.error("Login failed. Please check your credentials.");
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
   return (
     <Container>
       <Stack
@@ -73,7 +90,9 @@ const Login = () => {
                   variant="outlined"
                   fullWidth
                   type="email"
-                  {...register("email")}
+                  {...register("email", { required: "Email is required" })}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -84,7 +103,11 @@ const Login = () => {
                   variant="outlined"
                   fullWidth
                   type="password"
-                  {...register("password")}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
                   sx={{
                     color: "secondary.dark",
                     "& label": { color: "secondary.dark" },
@@ -99,7 +122,7 @@ const Login = () => {
               </Button>
               <Typography textAlign="center" my={2}>
                 Don&apos;t have an account?{" "}
-                <Link color="primary.main" href="/register">
+                <Link className="text-red-600" href="/register">
                   Register
                 </Link>
               </Typography>

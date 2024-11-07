@@ -11,12 +11,14 @@ const Navbar = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Typography variant="h4" color="primary" fontWeight={600}>
-          Health
-          <Box component="span" color="secondary.dark" fontWeight={600}>
-            Hub
-          </Box>
-        </Typography>
+        <Link href="/">
+          <Typography variant="h4" color="primary" fontWeight={600}>
+            Health
+            <Box component="span" color="secondary.dark" fontWeight={600}>
+              Hub
+            </Box>
+          </Typography>
+        </Link>
 
         <Stack
           direction="row"
