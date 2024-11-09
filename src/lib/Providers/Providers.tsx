@@ -2,17 +2,23 @@
 import { ThemeProvider } from "@mui/material";
 import { theme } from "../theme/theme";
 import { useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-    // const [mounted, setMounted] = useState(false);
+  // const [mounted, setMounted] = useState(false);
 
-    // useEffect(() => {
-    //     setMounted(true);
-    // }, []);
+  // useEffect(() => {
+  //     setMounted(true);
+  // }, []);
 
-    // if (!mounted) return null; // Render nothing on the server
+  // if (!mounted) return null; // Render nothing on the server
 
-    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+    </Provider>
+  );
 };
 
 export default Providers;
