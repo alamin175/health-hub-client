@@ -13,6 +13,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DrawerMenu from "../Sidebar/Sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const drawerWidth = 240;
 
@@ -113,6 +114,12 @@ export default function DashboardDrawer({
     setOpen(false);
   };
 
+  const pathname = usePathname();
+
+  // Get the current page title from the pathname
+  const currentPage = pathname?.split("/").pop() || "dashboard";
+  const pageTitle = currentPage.toUpperCase();
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -127,8 +134,8 @@ export default function DashboardDrawer({
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+          <Typography variant="h6" noWrap component="div" fontWeight={700}>
+            {pageTitle}
           </Typography>
         </Toolbar>
       </AppBar>
