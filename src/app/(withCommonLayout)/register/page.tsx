@@ -58,7 +58,7 @@ const Register = () => {
           if (info?.data?.accessToken) {
             Cookies.set(authKey, info?.data?.accessToken);
           }
-          router.push("/");
+          router.push("/dashboard");
         } else {
           toast.error(res?.message);
         }
