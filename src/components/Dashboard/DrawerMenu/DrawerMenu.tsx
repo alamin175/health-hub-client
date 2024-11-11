@@ -1,4 +1,4 @@
-// DrawerMenu.tsx
+// DrawerItem.tsx
 import React from "react";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -10,11 +10,11 @@ import Tooltip from "@mui/material/Tooltip";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 
-interface DrawerMenuProps {
+interface DrawerItemProps {
   open: boolean;
 }
 
-const DrawerMenu: React.FC<DrawerMenuProps> = ({ open }) => {
+const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
   const menuItems = [
     { text: "Inbox", icon: <InboxIcon /> },
     { text: "Starred", icon: <MailIcon /> },
@@ -60,9 +60,9 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ open }) => {
           </ListItem>
         ))}
       </List>
-      <Divider />
+      {/* <Divider /> */}
     </>
   );
 };
 
-export default DrawerMenu;
+export default DrawerItem;

@@ -13,7 +13,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import DrawerMenu from "../DrawerMenu/DrawerMenu";
+import DrawerItem from "../DrawerMenu/DrawerMenu";
 
 const drawerWidth = 240;
 
@@ -104,7 +104,7 @@ export default function DashboardDrawer({
   children: React.ReactNode;
 }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -169,7 +169,7 @@ export default function DashboardDrawer({
             )}
           </IconButton>
         </DrawerHeader>
-        <DrawerMenu open={open} /> {/* Render the DrawerMenu component here */}
+        <DrawerItem open={open} /> {/* Render the DrawerItem component here */}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
