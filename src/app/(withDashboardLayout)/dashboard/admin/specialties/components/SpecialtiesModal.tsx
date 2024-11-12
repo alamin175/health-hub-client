@@ -1,7 +1,13 @@
 import SimpleModal from "@/components/Shared/Modal/SimpleModal";
+import BaseForm from "@/components/Ui/Forms/BaseForm";
+import BaseInput from "@/components/Ui/Forms/BaseInput";
 import FileUploader from "@/components/Ui/Forms/FileUploader";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { useCreateSpecialtyMutation } from "@/redux/api/specialtyApi";
+import { modifyPayload } from "@/utils/modifyPayload";
+import { Box, Button, Grid, Input, Stack, TextField } from "@mui/material";
 import React, { Children } from "react";
+import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export type TProps = {
   open: boolean;
@@ -10,30 +16,35 @@ export type TProps = {
 };
 
 const SpecialtiesModal = ({ open, setOpen }: TProps) => {
+  const [createSpecialty] = useCreateSpecialtyMutation();
+  const handleFormSubmit = async (values: FieldValues) => {
+    const data = modifyPayload(values);
+    try {
+      const res = await createSpecialty(data).unwrap();
+      if (res?.data?.id) {
+        toast.success(res?.message);
+        setOpen(false);
+      }
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <SimpleModal open={open} setOpen={setOpen} title="Create a new Specialist">
-      <Box sx={{ padding: "10px" }}>
-        <form action="">
-          <Stack direction="row" gap={4}>
-            <Box>
-              <TextField
-                label="Title"
-                variant="outlined"
-                fullWidth
-                placeholder="Enter title"
-                sx={{
-                  color: "secondary.dark",
-                  "& label": { color: "secondary.dark" },
-                }}
-              />
-            </Box>
+      <BaseForm onSubmit={handleFormSubmit}>
+        <Grid container spacing={2}>
+          <Grid item md={6}>
+            <BaseInput name="title" label="Title" />
+          </Grid>
+          <Grid item md={6}>
             <FileUploader name="file" label="Upload File" />
-          </Stack>
-          <Button type="submit" sx={{ mt: "20px" }}>
-            Submit
-          </Button>
-        </form>
-      </Box>
+          </Grid>
+        </Grid>
+        <Button sx={{ mt: 1 }} type="submit">
+          Create
+        </Button>
+      </BaseForm>
     </SimpleModal>
   );
 };

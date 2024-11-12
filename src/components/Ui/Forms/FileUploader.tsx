@@ -31,7 +31,11 @@ export default function FileUploader({ name, label, sx }: TProps) {
             <Input
               {...field}
               type={name}
-              onChange={(e) => console.log(e.target)}
+              value={value?.fileName}
+              onChange={(e) =>
+                onChange((e?.target as HTMLInputElement).files?.[0])
+              }
+              sx={{ display: "none" }}
             />
           </Button>
         );
