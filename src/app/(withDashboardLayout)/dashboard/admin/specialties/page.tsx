@@ -1,16 +1,18 @@
-import SimpleModal from "@/components/Shared/Modal/SimpleModal";
-import { Box, Button, Stack } from "@mui/material";
-import React from "react";
+"use client";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import SpecialtiesModal from "./components/SpecialtiesModal";
 
-const Specialties = () => {
+const SpecialtiesPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between">
-        <Button>Add Specialties</Button>
-        <SimpleModal />
+        <Button onClick={() => setIsModalOpen(true)}>Create Specialties</Button>
+        <SpecialtiesModal open={isModalOpen} setOpen={setIsModalOpen} />
       </Stack>
     </Box>
   );
 };
 
-export default Specialties;
+export default SpecialtiesPage;

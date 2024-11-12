@@ -6,10 +6,23 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { TProps } from "@/app/(withDashboardLayout)/dashboard/admin/specialties/components/SpecialtiesModal";
+import { IconButton, Stack, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-export default function SimpleModal() {
-  const [open, setOpen] = React.useState(false);
+export type TModalProps = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+  children: React.ReactNode;
+};
 
+export default function SimpleModal({
+  open,
+  setOpen,
+  title,
+  children,
+}: TModalProps) {
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -20,30 +33,33 @@ export default function SimpleModal() {
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      {/* <Button variant="outlined" onClick={handleClickOpen}>
         Open alert dialog
-      </Button>
+      </Button> */}
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
+        <Stack direction="row" justifyContent="space-between">
+          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            {title}
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={(theme) => ({
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+        <DialogContent>{children}</DialogContent>
+        <DialogActions></DialogActions>
       </Dialog>
     </React.Fragment>
   );
