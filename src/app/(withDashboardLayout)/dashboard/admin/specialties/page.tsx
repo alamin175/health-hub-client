@@ -12,16 +12,33 @@ import {
   TableRow,
   Paper,
   Avatar,
+  IconButton,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import SpecialtiesModal from "./components/SpecialtiesModal";
-import { useGetSpecialtiesQuery } from "@/redux/api/specialtyApi";
+import {
+  useDeleteSpecialtyMutation,
+  useGetSpecialtiesQuery,
+} from "@/redux/api/specialtyApi";
+import { toast } from "sonner";
 
 const SpecialtiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: specialtiesData, isLoading } = useGetSpecialtiesQuery({});
+  const [deleteSpecialty] = useDeleteSpecialtyMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteSpecialty(id).unwrap();
+      if (response?.data?.id) {
+        toast.success(response?.message || "Specialty deleted successfully");
+      }
+    } catch (err: any) {
+      toast.error("Failed to delete specialty");
+      console.error(err.message);
+    }
+  };
 
   return (
     <Box>
@@ -32,7 +49,6 @@ const SpecialtiesPage = () => {
         </Button>
       </Stack>
 
-      {/* Specialties Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -50,14 +66,17 @@ const SpecialtiesPage = () => {
                 </TableCell>
               </TableRow>
             ) : specialtiesData?.data?.length ? (
-              specialtiesData.data.map((specialty: any) => (
+              specialtiesData.data.map((specialty) => (
                 <TableRow key={specialty.id}>
                   <TableCell>{specialty.title}</TableCell>
                   <TableCell>
                     <Avatar alt={specialty.title} src={specialty.icon} />
                   </TableCell>
                   <TableCell>
-                    <IconButton aria-label="delete">
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handleDelete(specialty.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -74,7 +93,6 @@ const SpecialtiesPage = () => {
         </Table>
       </TableContainer>
 
-      {/* Specialties Modal */}
       <SpecialtiesModal open={isModalOpen} setOpen={setIsModalOpen} />
     </Box>
   );
