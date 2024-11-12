@@ -7,8 +7,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { drawerItems } from "@/utils/drawerItems";
 import { UserRole } from "@/types";
 import Link from "next/link";
@@ -27,9 +25,11 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
     setUserRole(role);
   }, []);
   console.log(userRole);
-  const linkPath = (path: any) => {
-    return `/dashboard/${path}`;
+  const linkPath = (path: string) => {
+    // Ensure path is absolute by checking if it already starts with `/dashboard`
+    return path.startsWith("/dashboard") ? path : `/dashboard/${path}`;
   };
+
   const pathName = usePathname();
 
   return (
@@ -37,7 +37,7 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
       <List>
         {drawerItems(userRole as UserRole).map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <Link href={item.path}>
+            <Link href={linkPath(item.path)}>
               <Tooltip
                 title={item.title}
                 placement="right"

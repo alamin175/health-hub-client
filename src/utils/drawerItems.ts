@@ -9,6 +9,7 @@ import EventIcon from "@mui/icons-material/Event";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
+import RateReviewIcon from "@mui/icons-material/RateReview";
 
 export const drawerItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
@@ -57,7 +58,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
         {
           title: "Reviews",
           path: `${role}/reviews`,
-          icon: ReviewsIcon,
+          icon: RateReviewIcon,
         }
       );
       break;
