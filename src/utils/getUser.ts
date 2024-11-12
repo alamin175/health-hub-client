@@ -8,6 +8,7 @@ export const getUser = () => {
     const decodedData = decodeToken(accessToken);
     return {
       ...decodedData,
+      // @ts-ignore
       role: decodedData?.role?.toLowerCase(),
     };
   }
