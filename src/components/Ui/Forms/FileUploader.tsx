@@ -8,10 +8,18 @@ import { Input } from "@mui/material";
 type TProps = {
   name: string;
   label?: string;
+  size?: "small" | "medium";
+  variant?: "outlined" | "contained";
   sx?: SxProps;
 };
 
-export default function FileUploader({ name, label, sx }: TProps) {
+export default function FileUploader({
+  name,
+  label,
+  size,
+  variant,
+  sx,
+}: TProps) {
   const { control } = useFormContext();
   return (
     <Controller
@@ -22,7 +30,7 @@ export default function FileUploader({ name, label, sx }: TProps) {
           <Button
             component="label"
             role={undefined}
-            variant="contained"
+            variant={variant}
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
             sx={{ ...sx }}
@@ -31,6 +39,7 @@ export default function FileUploader({ name, label, sx }: TProps) {
             <Input
               {...field}
               type={name}
+              size={size}
               value={value?.fileName}
               onChange={(e) =>
                 onChange((e?.target as HTMLInputElement).files?.[0])

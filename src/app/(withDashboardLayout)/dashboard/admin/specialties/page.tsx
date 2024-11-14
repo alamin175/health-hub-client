@@ -66,7 +66,7 @@ const SpecialtiesPage = () => {
                 </TableCell>
               </TableRow>
             ) : specialtiesData?.data?.length ? (
-              specialtiesData.data.map((specialty) => (
+              specialtiesData.data.map((specialty: any) => (
                 <TableRow key={specialty.id}>
                   <TableCell>{specialty.title}</TableCell>
                   <TableCell>
