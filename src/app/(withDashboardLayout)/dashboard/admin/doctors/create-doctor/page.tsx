@@ -13,12 +13,14 @@ const CreateDoctor = () => {
   const [createDoctor] = useCreateDoctorMutation();
   const handleFormSubmit = async (values: FieldValues) => {
     const data = modifyPayload(values);
+    values.doctor.experience = Number(values.doctor.experience);
+    values.doctor.fee = Number(values.doctor.appointmentFee);
     try {
-      const res = await createDoctor(data).unwrap();
-      if (res?.data?.id) {
-        toast.success(res?.message);
-      }
-      console.log(res);
+      //   const res = await createDoctor(data).unwrap();
+      //   if (res?.data?.id) {
+      //     toast.success(res?.message);
+      //   }
+      console.log(values);
     } catch (err) {
       console.error(err);
     }
@@ -41,6 +43,14 @@ const CreateDoctor = () => {
           <BaseInput
             name="doctor.email"
             label="Email"
+            size="medium"
+            sx={{ width: "100%" }}
+          />
+        </Grid>
+        <Grid item md={4}>
+          <BaseInput
+            name="password"
+            label="Password"
             size="medium"
             sx={{ width: "100%" }}
           />
