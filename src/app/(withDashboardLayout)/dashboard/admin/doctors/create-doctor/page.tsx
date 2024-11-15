@@ -5,24 +5,35 @@ import FileUploader from "@/components/Ui/Forms/FileUploader";
 import { useCreateDoctorMutation } from "@/redux/api/doctorApi";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const CreateDoctor = () => {
   const [createDoctor] = useCreateDoctorMutation();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const handleFormSubmit = async (values: FieldValues) => {
-    const data = modifyPayload(values);
-    values.doctor.experience = Number(values.doctor.experience);
-    values.doctor.fee = Number(values.doctor.appointmentFee);
+    setLoading(true);
     try {
-      //   const res = await createDoctor(data).unwrap();
-      //   if (res?.data?.id) {
-      //     toast.success(res?.message);
-      //   }
-      console.log(values);
+      values.doctor.experience = Number(values.doctor.experience);
+      values.doctor.apointmentFee = Number(values.doctor.apointmentFee);
+      const data = modifyPayload(values);
+      const res = await createDoctor(data).unwrap();
+      console.log(res);
+      if (res?.data?.id) {
+        toast.success(res?.message);
+        setLoading(false);
+        router.push("/dashboard/admin/doctors");
+      }
     } catch (err) {
       console.error(err);
+      //@ts-ignore
+      toast.error(err?.data?.message || "An error occurred.");
+      setLoading(false);
     }
   };
   return (
@@ -137,9 +148,16 @@ const CreateDoctor = () => {
           />
         </Grid>
       </Grid>
-      <Button sx={{ mt: 5, py: 2, width: "30%" }} type="submit">
-        Create Doctor
-      </Button>
+      <LoadingButton
+        type="submit"
+        loading={loading}
+        loadingPosition="center"
+        loadingIndicator="Creating..."
+        variant="contained"
+        sx={{ mt: 5, py: 2, width: "30%" }}
+      >
+        {loading ? "Creating" : "Create Doctor"}
+      </LoadingButton>
     </BaseForm>
   );
 };
