@@ -22,6 +22,7 @@ import {
   useGetSpecialtiesQuery,
 } from "@/redux/api/specialtyApi";
 import { toast } from "sonner";
+import BaseTable from "@/components/Dashboard/BaseTable/BaseTable";
 
 const SpecialtiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -40,6 +41,24 @@ const SpecialtiesPage = () => {
     }
   };
 
+  const columns = [
+    { label: "Title", key: "title" },
+    {
+      label: "Icon",
+      key: "icon",
+      render: (row: any) => <Avatar alt={row.title} src={row.icon} />,
+    },
+    {
+      label: "Action",
+      key: "action",
+      render: (row: any) => (
+        <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
+  ];
+
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" mb={3}>
@@ -48,7 +67,7 @@ const SpecialtiesPage = () => {
           Create Specialties
         </Button>
       </Stack>
-
+      {/* 
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -91,7 +110,14 @@ const SpecialtiesPage = () => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+
+      <BaseTable
+        columns={columns}
+        data={specialtiesData?.data || []}
+        isLoading={isLoading}
+        emptyMessage="No specialties found."
+      />
 
       <SpecialtiesModal open={isModalOpen} setOpen={setIsModalOpen} />
     </Box>
