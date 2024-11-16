@@ -1,27 +1,55 @@
 "use client";
 import BaseTable from "@/components/Dashboard/BaseTable/BaseTable";
-import { useGetAllDoctorsQuery } from "@/redux/api/doctorApi";
+import {
+  useDeleteDoctorMutation,
+  useGetAllDoctorsQuery,
+} from "@/redux/api/doctorApi";
+import { useDebounced } from "@/redux/hooks";
 import {
   Avatar,
   Box,
   Button,
+  IconButton,
   Input,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const DoctorPage = () => {
-  const query: Record<string, any> = {};
+  const [deleteDoctor] = useDeleteDoctorMutation();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  query["searchTerm"] = searchTerm;
-  const { data, isLoading } = useGetAllDoctorsQuery({ ...query });
-  console.log(searchTerm);
+  const query: Record<string, any> = {};
+  const debounceTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 500,
+  });
+
+  if (!!debounceTerm) {
+    query["searchTerm"] = searchTerm;
+  }
+  const { data, isLoading, refetch } = useGetAllDoctorsQuery({ ...query });
   const doctors = data?.doctors;
   const meta = data?.meta;
-  console.log(doctors);
+  console.log(meta);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await deleteDoctor(id).unwrap();
+      console.log(res);
+      if (res?.data?.id) {
+        toast.success(res?.message);
+        refetch();
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Error deleting doctor");
+      console.error(err);
+    }
+  };
   const columns = [
     {
       label: "S.No.",
@@ -71,11 +99,13 @@ const DoctorPage = () => {
       label: "Action",
       key: "action",
       render: (row: any) => (
-        <Link href={`/dashboard/admin/doctors/${row.id}`}>
-          <Button variant="outlined" size="small">
-            View Details
-          </Button>
-        </Link>
+        <IconButton
+          sx={{ color: "red" }}
+          aria-label="delete"
+          onClick={() => handleDelete(row.id)}
+        >
+          <DeleteIcon />
+        </IconButton>
       ),
     },
   ];

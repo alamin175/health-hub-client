@@ -11,7 +11,7 @@ type TProps = {
   delay: number;
 };
 
-const useDebounced = ({ searchQuery, delay }: TProps) => {
+export const useDebounced = ({ searchQuery, delay }: TProps) => {
   const [debounce, setDebounce] = useState<string>(searchQuery);
   useEffect(() => {
     const handler = setTimeout(() => {
