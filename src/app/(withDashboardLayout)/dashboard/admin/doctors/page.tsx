@@ -1,13 +1,24 @@
 "use client";
 import BaseTable from "@/components/Dashboard/BaseTable/BaseTable";
 import { useGetAllDoctorsQuery } from "@/redux/api/doctorApi";
-import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Input,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const DoctorPage = () => {
-  const { data, isLoading } = useGetAllDoctorsQuery({});
-  // console.log(data);first
+  const query: Record<string, any> = {};
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  query["searchTerm"] = searchTerm;
+  const { data, isLoading } = useGetAllDoctorsQuery({ ...query });
+  console.log(searchTerm);
   const doctors = data?.doctors;
   const meta = data?.meta;
   console.log(doctors);
@@ -72,10 +83,15 @@ const DoctorPage = () => {
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" mb={3}>
+        <TextField
+          size="small"
+          placeholder="Search doctor"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ border: "1px solid #ff441c" }}
+        />
         <Link href="/dashboard/admin/doctors/create-doctor">
           <Button variant="contained">Create Doctor</Button>
         </Link>
-        <Typography variant="h4">Doctor's</Typography>
       </Stack>
       <BaseTable
         columns={columns}
