@@ -1,5 +1,7 @@
+import { ISchedule } from "@/types/Schedule";
 import { baseApi } from "./baseApi";
 import { tagTypes } from "./tagTypeList"; // Ensure this import is correct
+import { Imeta } from "@/types";
 
 const scheduleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -13,11 +15,20 @@ const scheduleApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: tagTypes.specialties, id: "LIST" }],
     }),
 
-    getSchedule: build.query({
-      query: () => ({
-        url: "/specialties",
-        method: "GET",
-      }),
+    getAllSchedule: build.query({
+      query: (arg: Record<string, any>) => {
+        return {
+          url: "/schedule",
+          method: "GET",
+          params: arg,
+        };
+      },
+      transformResponse: (response: [], meta: Imeta) => {
+        return {
+          schedules: response,
+          meta,
+        };
+      },
       providesTags: (result) =>
         result
           ? [{ type: tagTypes.specialties, id: "LIST" }]
@@ -26,7 +37,7 @@ const scheduleApi = baseApi.injectEndpoints({
 
     deleteSchedule: build.mutation({
       query: (id) => ({
-        url: `/specialties/${id}`,
+        url: `/schedule/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [{ type: tagTypes.specialties, id: "LIST" }],
@@ -34,4 +45,8 @@ const scheduleApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateScheduleMutation } = scheduleApi;
+export const {
+  useCreateScheduleMutation,
+  useGetAllScheduleQuery,
+  useDeleteScheduleMutation,
+} = scheduleApi;

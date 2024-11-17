@@ -6,10 +6,8 @@ import BaseTimePicker from "@/components/Ui/Forms/BaseTimePicker";
 import FileUploader from "@/components/Ui/Forms/FileUploader";
 import { useCreateScheduleMutation } from "@/redux/api/scheduleApi";
 import { dateFormatter } from "@/utils/dateFormatter";
-import { modifyPayload } from "@/utils/modifyPayload";
 import { timeFormatter } from "@/utils/timeFormatter";
 import { Box, Button, Grid, Input, Stack, TextField } from "@mui/material";
-import React, { Children } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 

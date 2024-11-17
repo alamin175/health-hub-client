@@ -46,7 +46,7 @@ const BaseTable = <T,>({
                 <CircularProgress />
               </TableCell>
             </TableRow>
-          ) : data.length > 0 ? (
+          ) : data?.length > 0 ? (
             data.map((row, index) => (
               <TableRow key={index}>
                 {columns.map((column, colIndex) => (
