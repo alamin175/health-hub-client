@@ -29,12 +29,12 @@ const ScheduleModal = ({ open, setOpen }: TProps) => {
     values.endTime = timeFormatter(values.endTime);
     console.log(values);
     try {
-      //   const res = await createSchedule(data).unwrap();
-      //   if (res?.data?.id) {
-      //     toast.success(res?.message);
-      //     setOpen(false);
-      //   }
-      //   console.log(res);
+      const res = await createSchedule(values).unwrap();
+      if (res?.data?.length) {
+        toast.success(res?.message);
+        setOpen(false);
+      }
+      console.log(res);
     } catch (err) {
       console.error(err);
     }

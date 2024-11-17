@@ -7,7 +7,7 @@ const scheduleApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/schedule",
         method: "POST",
-        contentType: "multipart/form-data",
+        contentType: "application/json",
         data,
       }),
       invalidatesTags: [{ type: tagTypes.specialties, id: "LIST" }],
