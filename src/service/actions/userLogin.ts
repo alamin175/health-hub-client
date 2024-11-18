@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import { FormValues } from "@/app/(withCommonLayout)/login/page";
 import { headers } from "next/headers";
@@ -10,7 +10,8 @@ export const userLogin = async (value: FormValues) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(value),
-    cache: "no-store",
+    // cache: "no-store",
+    credentials: "include",
   });
   const userInfo = await res.json();
   return userInfo;
