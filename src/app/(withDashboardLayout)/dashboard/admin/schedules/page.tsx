@@ -20,11 +20,9 @@ const Schedules = () => {
   const [deleteSchedule] = useDeleteScheduleMutation();
 
   // @ts-ignore
-  const schedules = data?.schedules?.data;
+  const schedules = data?.schedules;
   // @ts-ignore
-  const meta = data?.schedules?.meta;
-
-  // console.log(meta);
+  const meta = data?.meta;
 
   useEffect(() => {
     const updateData = schedules?.map((schedule: ISchedule, index: number) => {
@@ -39,7 +37,7 @@ const Schedules = () => {
     });
     setAllSchedule(updateData);
   }, [schedules]);
-  console.log(allSchedule);
+  console.log("shcedule", allSchedule);
 
   const handleDelete = async (id: string) => {
     try {

@@ -28,7 +28,7 @@ const SpecialtiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: specialtiesData, isLoading } = useGetSpecialtiesQuery({});
   const [deleteSpecialty] = useDeleteSpecialtyMutation();
-
+  console.log(specialtiesData);
   const handleDelete = async (id: string) => {
     try {
       const response = await deleteSpecialty(id).unwrap();

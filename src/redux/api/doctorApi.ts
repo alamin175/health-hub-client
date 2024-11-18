@@ -27,9 +27,9 @@ const doctorApi = baseApi.injectEndpoints({
         message: string;
       }) => {
         return {
-          doctors: response.data,
-          meta: response.meta,
-          message: response.message,
+          doctors: response?.data,
+          meta: response?.meta,
+          message: response?.message,
         };
       },
       providesTags: [tagTypes.doctor],

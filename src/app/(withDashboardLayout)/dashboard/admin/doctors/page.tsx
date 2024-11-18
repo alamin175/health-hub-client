@@ -127,7 +127,7 @@ const DoctorPage = () => {
         columns={columns}
         data={doctors || []}
         isLoading={isLoading}
-        emptyMessage="No specialties found."
+        emptyMessage="No Doctor's found."
       />
     </Box>
   );
