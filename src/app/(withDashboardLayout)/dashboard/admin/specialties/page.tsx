@@ -52,7 +52,11 @@ const SpecialtiesPage = () => {
       label: "Action",
       key: "action",
       render: (row: any) => (
-        <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
+        <IconButton
+          sx={{ color: "red" }}
+          aria-label="delete"
+          onClick={() => handleDelete(row.id)}
+        >
           <DeleteIcon />
         </IconButton>
       ),
