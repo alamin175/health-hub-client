@@ -1,3 +1,4 @@
+import VoiceToText from "@/components/ML_Part/VoiceToText/VoiceToText";
 import HeroSection from "@/components/Ui/Homepage/HeroSection/HeroSection";
 import Specialist from "@/components/Ui/Homepage/Specialist/Specialist";
 import TopRatedDoctor from "@/components/Ui/Homepage/TopRatedDoctor/TopRatedDoctor";
@@ -11,6 +12,7 @@ const HomePage = () => {
       <HeroSection />
       <Specialist />
       <TopRatedDoctor />
+      <VoiceToText />
     </div>
   );
 };
