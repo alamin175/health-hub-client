@@ -65,12 +65,20 @@ const VoiceToText: React.FC = () => {
   };
 
   return (
-    <div className="text-black">
+    <div className="text-black m-10">
       <h1>Voice to Text</h1>
-      <button onClick={startListening} disabled={listening}>
+      <button
+        className="p-3 bg-orange-600 text-white font-bold rounded-md mr-3 m-6"
+        onClick={startListening}
+        disabled={listening}
+      >
         Start Listening
       </button>
-      <button onClick={stopListening} disabled={!listening}>
+      <button
+        className="p-3 bg-orange-600 text-white font-bold rounded-md mr-3 m-6"
+        onClick={stopListening}
+        disabled={!listening}
+      >
         Stop Listening
       </button>
       <p>
