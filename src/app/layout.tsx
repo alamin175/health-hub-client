@@ -5,8 +5,7 @@ import "./globals.css";
 import Providers from "@/lib/Providers/Providers";
 import Footer from "@/components/Shared/Footer/Footer";
 import { Toaster } from "sonner";
-import AiDoctorButton from "@/components/ML_Part/AiDoctorButton";
-
+import DocButton from "@/components/ML_Part/DocButton";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -38,6 +37,18 @@ export default function RootLayout({
             <>
               <Toaster position="top-right" richColors />
               {/* <AiDoctorButton />  */}
+              {/* <div>
+                <a
+                  target="blank"
+                  className={`fixed bottom-20 right-8 z-10 transition-all duration-300
+						}`}
+                >
+                  <div className="text-4xl sm:text-5xl text-green-500 font-bold ">
+                    Doctor
+                  </div>
+                </a>
+              </div> */}
+              <DocButton />
               {children}
             </>
           </AppRouterCacheProvider>
