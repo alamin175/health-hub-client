@@ -90,6 +90,16 @@ const TopRatedDoctor = async () => {
             </Grid>
           ))}
         </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button variant="outlined" LinkComponent={"a"} href="/doctors">
+            View All
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
