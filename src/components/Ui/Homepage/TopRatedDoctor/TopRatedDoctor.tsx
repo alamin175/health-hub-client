@@ -44,12 +44,25 @@ const TopRatedDoctor = async () => {
           {doctors.map((doctor: any) => (
             <Grid item md={4} key={doctor.id}>
               <Card sx={{ maxWidth: 345 }}>
-                <CardMedia
-                  component="img"
-                  alt="green iguana"
-                  height="140"
-                  image={doctor.profilePhoto}
-                />
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: 300,
+                    "& img": {
+                      width: "100%",
+                      height: "100%",
+                      overflow: "hidden",
+                      objectFit: "cover",
+                    },
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    alt="green iguana"
+                    height="140"
+                    image={doctor.profilePhoto}
+                  />
+                </Box>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {doctor.name}
