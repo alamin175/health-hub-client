@@ -13,7 +13,8 @@ interface Specialty {
 }
 
 const ScrollCategory = ({ specialties }: { specialties: string }) => {
-  const { data: specialtiesResponse, isLoading } = useGetSpecialtiesQuery();
+  const { data: specialtiesResponse, isLoading } =
+    useGetSpecialtiesQuery(undefined);
   const [value, setValue] = React.useState("All"); // Default to "All"
   const router = useRouter();
 
@@ -22,14 +23,14 @@ const ScrollCategory = ({ specialties }: { specialties: string }) => {
     if (specialties) {
       setValue(specialties);
     } else {
-      setValue("All"); // Default to "All" if no specialty is selected
+      setValue("All");
     }
   }, [specialties]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
-    const param = newValue === "All" ? "" : newValue; // "All" clears the specialty filter
-    router.push(`/doctors?specialties=${param}`, { scroll: false }); // Navigate without scrolling
+    const param = newValue === "All" ? "" : newValue;
+    router.push(`/doctors?specialties=${param}`, { scroll: false });
   };
 
   if (isLoading) {

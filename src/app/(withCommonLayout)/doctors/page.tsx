@@ -30,7 +30,7 @@ const Doctors = async ({ searchParams }: PropType) => {
             </Box>
           ))
         ) : (
-          <Box>No Doctor Found With This Specialty</Box>
+          <Box color="secondary.main">No Doctor Found With This Specialty</Box>
         )}
       </Box>
     </Container>
