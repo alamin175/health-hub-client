@@ -7,7 +7,7 @@ export interface Doctor {
   address: string;
   registrationNumber: string;
   experience: number;
-  gender: "MALE" | "FEMALE" | "OTHER";
+  gender: "MALE" | "FEMALE";
   apointmentFee: number;
   qualification: string;
   currentWorkingPlace: string;
