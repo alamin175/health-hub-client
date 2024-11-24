@@ -158,6 +158,7 @@ const ProfileUpdate = () => {
             type="email"
             label="Email"
             sx={{ width: "100%" }}
+            //@ts-ignore
             disabled
           />
         </Grid>

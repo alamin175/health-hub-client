@@ -28,7 +28,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
         </Box>
         <Stack flex={1} justifyContent="space-between">
           <Box sx={{ flex: 1 }}>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant="h6" color="secondary.main" fontWeight={600}>
               {doctor?.name}
             </Typography>
             <Typography sx={{ my: "2px", color: "secondary.main" }}>
@@ -101,7 +101,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
           }}
         />
         <Stack direction="row" justifyContent="space-between">
-          <Box>
+          <Box color="secondary.main">
             <Typography color="secondary.main">Total Experience</Typography>
             <Typography variant="h6" sx={{ fontWeight: "600" }}>
               {doctor?.experience}+ Years

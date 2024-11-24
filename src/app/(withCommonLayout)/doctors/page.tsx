@@ -6,10 +6,11 @@ import { Doctor } from "@/types/Doctors";
 import DoctorCard from "./components/DoctorCard";
 
 interface PropType {
-  searchParams: { specialties: string };
+  searchParams: { specialties?: string }; // Mark `specialties` as optional
 }
+
 const Doctors = async ({ searchParams }: PropType) => {
-  const specialtiesParam = searchParams.specialties || ""; // Handle undefined specialties
+  const specialtiesParam = searchParams.specialties || ""; // Empty string for "All"
   const res = await fetch(
     `http://localhost:5000/api/v1/doctor?specialties=${specialtiesParam}`
   );
@@ -20,7 +21,7 @@ const Doctors = async ({ searchParams }: PropType) => {
     <Container>
       <DashedLine />
       <ScrollCategory specialties={specialtiesParam} />
-      <Box sx={{ mt: 2, p: 3, bgcolor: "secondary.light" }}>
+      <Box sx={{ mt: 2, p: 3, bgcolor: "#eae8e8" }}>
         {data?.length > 0 ? (
           data.map((doctor: Doctor, index: number) => (
             <Box key={doctor.id}>

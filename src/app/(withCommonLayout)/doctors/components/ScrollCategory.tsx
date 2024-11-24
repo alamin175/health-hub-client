@@ -13,28 +13,35 @@ interface Specialty {
 }
 
 const ScrollCategory = ({ specialties }: { specialties: string }) => {
-  const { data: specialtiesResponse, isLoading } =
-    useGetSpecialtiesQuery(undefined);
-  const [value, setValue] = React.useState("");
+  const { data: specialtiesResponse, isLoading } = useGetSpecialtiesQuery();
+  const [value, setValue] = React.useState("All"); // Default to "All"
   const router = useRouter();
 
   // Update the selected tab based on `specialties` prop
   useEffect(() => {
     if (specialties) {
       setValue(specialties);
+    } else {
+      setValue("All"); // Default to "All" if no specialty is selected
     }
   }, [specialties]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
-    router.push(`/doctors?specialties=${newValue}`, { scroll: false }); // Navigate without scrolling
+    const param = newValue === "All" ? "" : newValue; // "All" clears the specialty filter
+    router.push(`/doctors?specialties=${param}`, { scroll: false }); // Navigate without scrolling
   };
 
   if (isLoading) {
     return null;
   }
 
-  const specialtiesData = specialtiesResponse?.data || [];
+  // Add an "All" tab and merge with specialty data
+  const specialtiesData = [
+    { id: "All", title: "All" },
+    ...(specialtiesResponse?.data || []),
+  ];
+
   return (
     <Box sx={{ maxWidth: "100%", bgcolor: "background.paper", mx: "auto" }}>
       <Tabs
@@ -48,7 +55,7 @@ const ScrollCategory = ({ specialties }: { specialties: string }) => {
           <Tab
             key={specialty.id}
             label={specialty.title}
-            value={specialty.title}
+            value={specialty.title} // Use "All" for the default tab
             sx={{ fontWeight: 600 }}
           />
         ))}
