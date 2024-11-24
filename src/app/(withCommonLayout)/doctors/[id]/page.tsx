@@ -11,7 +11,7 @@ type PropTypes = {
 
 const InfoBoxStyles = {
   background:
-    "linear-gradient(to bottom, rgba(21,134,253,0.3), rgba(255,255,255,1) 100%)",
+    "linear-gradient(to bottom, rgba(255,68,28,0.3), rgba(255,255,255,1) 100%);",
   width: "100%",
   p: 3,
   "& h6": {
@@ -32,7 +32,7 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
 
   return (
     <Container>
-      <Box my={5}>
+      <Box color="secondary.main" my={5}>
         <Typography variant="h4" fontWeight={700} textAlign="center">
           Doctor&apos;s Profile Details
         </Typography>
@@ -49,7 +49,7 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
         </Typography>
       </Box>
 
-      <Box>
+      <Box color="secondary.main">
         <Box sx={{ my: 10, p: 3, bgcolor: "#f8f8f8" }}>
           <Stack sx={{ bgcolor: "white", p: 3 }}>
             <Stack direction="row" gap={3}>

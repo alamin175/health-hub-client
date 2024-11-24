@@ -114,7 +114,7 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
         <Typography variant="h4" mb={3} color="primary.main">
           Availability
         </Typography>
-        <Typography variant="h6" fontSize={16}>
+        <Typography variant="h6" fontSize={16} color="secondary.main">
           <b>Today: {dateFormatter(currentDate.toISOString()) + " " + today}</b>
         </Typography>
         <Box sx={{ borderBottom: "2px dashed #d0d0d0", mt: 2, mb: 3 }} />
@@ -152,7 +152,7 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
             </span>
           )}
         </Stack>
-        <Typography variant="h6" fontSize={16} mt={5}>
+        <Typography variant="h6" fontSize={16} mt={5} color="secondary.main">
           <b>
             Tomorrow: {dateFormatter(nextDate.toISOString()) + " " + tomorrow}
           </b>
