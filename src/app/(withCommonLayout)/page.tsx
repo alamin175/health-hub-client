@@ -12,7 +12,7 @@ const HomePage = () => {
       <HeroSection />
       <Specialist />
       <TopRatedDoctor />
-      <VoiceToText />
+      {/* <VoiceToText /> */}
     </div>
   );
 };

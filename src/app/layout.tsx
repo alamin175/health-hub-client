@@ -6,6 +6,7 @@ import Providers from "@/lib/Providers/Providers";
 import Footer from "@/components/Shared/Footer/Footer";
 import { Toaster } from "sonner";
 import DocButton from "@/components/ML_Part/DocButton";
+import Link from "next/link";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -48,7 +49,9 @@ export default function RootLayout({
                   </div>
                 </a>
               </div> */}
-              <DocButton />
+              <Link href="/dashboard/ai-doctor">
+                <DocButton />
+              </Link>
               {children}
             </>
           </AppRouterCacheProvider>
