@@ -13,6 +13,13 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 
 export const drawerItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
+  const defaultMenu = [
+    {
+      title: "Profile",
+      path: `${role}/profile`,
+      icon: DashboardIcon,
+    },
+  ];
   switch (role) {
     case USER_ROLE.SUPER_ADMIN:
       roleMenus.push(
@@ -103,5 +110,5 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
     default:
       break;
   }
-  return [...roleMenus];
+  return [...roleMenus, ...defaultMenu];
 };
