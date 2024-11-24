@@ -13,6 +13,7 @@ import {
 } from "@/redux/api/myProfile";
 import AutoFileUploader from "@/components/Ui/Forms/AutoFileUploader";
 import DoctorInformation from "./components/DoctorInformations";
+import Link from "next/link";
 
 const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,7 +75,9 @@ const Profile = () => {
 
             <Button
               endIcon={<ModeEditIcon />}
-              onClick={() => setIsModalOpen(true)}
+              variant="contained"
+              component={Link}
+              href={`/dashboard/doctor/${data?.data?.id}`}
             >
               Edit Profile
             </Button>
