@@ -2,7 +2,7 @@ import SimpleModal from "@/components/Shared/Modal/SimpleModal";
 import BaseForm from "@/components/Ui/Forms/BaseForm";
 import { useCreateDoctorScheduleMutation } from "@/redux/api/doctorSchedules";
 import { useGetAllScheduleQuery } from "@/redux/api/scheduleApi";
-import { Box, Button, Grid, Input, Stack, TextField } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -17,13 +17,14 @@ export type TProps = {
 };
 
 const DoctorScheduleModal = ({ open, setOpen }: TProps) => {
-  const [createSchedule] = useCreateDoctorScheduleMutation();
   const [selectedDate, setSelectedDate] = useState(
     dayjs(new Date()).toISOString()
   );
-  const query: Record<string, any> = {};
+  const query: Record<string, string> = {}; // Fixed: Typed as Record<string, string>
 
   const [selectedScheduleIds, setSelectedScheduleIds] = useState<string[]>([]);
+
+  // Populate query with date filters
   if (!!selectedDate) {
     query["startDate"] = dayjs(selectedDate)
       .hour(0)
@@ -39,25 +40,24 @@ const DoctorScheduleModal = ({ open, setOpen }: TProps) => {
 
   const { data, refetch } = useGetAllScheduleQuery(query);
   const schedules = data?.schedules;
-  console.log(schedules, "data");
-  const [createDoctorSchedule, { isLoading }] =
-    useCreateDoctorScheduleMutation();
 
-  console.log(selectedScheduleIds);
+  const [createDoctorSchedule] = useCreateDoctorScheduleMutation(); // Removed `isLoading`
 
   const onSubmit = async () => {
     try {
       const res = await createDoctorSchedule({
         scheduleIds: selectedScheduleIds,
-      });
-      console.log("res dct", res);
-      toast.success(res?.data?.message);
+      }).unwrap(); // Use `.unwrap()` to handle errors correctly
+
+      toast.success(res?.message || "Schedule created successfully!");
       refetch();
       setOpen(false);
     } catch (error) {
-      console.log(error);
+      console.error("Error creating schedule:", error);
+      toast.error("Failed to create schedule. Please try again.");
     }
   };
+
   return (
     <SimpleModal open={open} setOpen={setOpen} title="Create Doctor Schedule">
       <BaseForm onSubmit={onSubmit}>

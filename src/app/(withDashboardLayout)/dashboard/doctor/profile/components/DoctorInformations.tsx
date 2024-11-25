@@ -1,5 +1,24 @@
 import { Box, Stack, styled, Typography } from "@mui/material";
 
+// Define the type for the `data` prop
+interface DoctorInformationProps {
+  data: {
+    role: string;
+    name: string;
+    email: string;
+    gender: string;
+    designation: string;
+    apointmentFee: number;
+    qualification: string;
+    currentWorkingPlace: string;
+    createdAt: string;
+    status: string;
+    averageRating: number;
+    experience: number;
+  };
+}
+
+// Styled component for the information box
 const StyledInformationBox = styled(Box)(({ theme }) => ({
   background: "#f4f7fe",
   borderRadius: theme.spacing(1),
@@ -10,7 +29,7 @@ const StyledInformationBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const DoctorInformation = ({ data }: any) => {
+const DoctorInformation = ({ data }: DoctorInformationProps) => {
   return (
     <>
       <Typography variant="h5" color="primary.main" mb={2}>

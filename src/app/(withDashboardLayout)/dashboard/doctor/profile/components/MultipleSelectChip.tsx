@@ -8,6 +8,19 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 
+// Define the Specialty type
+interface Specialty {
+  id: string;
+  title: string;
+}
+
+// Props interface for the component
+interface MultipleSelectSpecialtyProps {
+  allSpecialties: { data: Specialty[] }; // Define the structure of allSpecialties
+  selectedIds: string[]; // Array of selected specialty IDs
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; // Function to update selected IDs
+}
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -19,9 +32,10 @@ const MenuProps = {
   },
 };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
+// Helper function to apply styles
+function getStyles(name: string, selectedIds: readonly string[], theme: Theme) {
   return {
-    fontWeight: personName.includes(name)
+    fontWeight: selectedIds.includes(name)
       ? theme.typography.fontWeightMedium
       : theme.typography.fontWeightRegular,
   };
@@ -32,10 +46,10 @@ export default function MultipleSelectSpecialty({
   allSpecialties,
   selectedIds,
   setSelectedIds,
-}: any) {
+}: MultipleSelectSpecialtyProps) {
   const theme = useTheme();
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedIds>) => {
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
@@ -56,9 +70,9 @@ export default function MultipleSelectSpecialty({
         input={<OutlinedInput id="select-multiple-chip" label="Specialties" />}
         renderValue={(selected) => (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {selected.map((value: any) => {
-              const specialty = allSpecialties?.data?.find(
-                (item: any) => item.id === value
+            {selected.map((value) => {
+              const specialty = allSpecialties?.data.find(
+                (item) => item.id === value
               );
               return specialty ? (
                 <Chip key={value} size="small" label={specialty.title} />
@@ -68,7 +82,7 @@ export default function MultipleSelectSpecialty({
         )}
         MenuProps={MenuProps}
       >
-        {allSpecialties?.data?.map((specialty: any) => (
+        {allSpecialties?.data?.map((specialty) => (
           <MenuItem
             key={specialty.id}
             value={specialty.id}
