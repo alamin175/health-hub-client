@@ -1,8 +1,10 @@
 "use client";
 import { getTimeIn12HourFormat } from "@/app/(withDashboardLayout)/dashboard/doctor/schedules/components/DoctorScheduleModal/MultipleSelectSchedule";
+import { useCreateAppointmentMutation } from "@/redux/api/appointmentApi";
 // import { useCreateAppointmentMutation } from "@/redux/api/appointmentApi";
 // import { useInitialPaymentMutation } from "@/redux/api/paymentApi";
 import { useGetAllDoctorSchedulesQuery } from "@/redux/api/doctorSchedules";
+import { useInitialPaymentMutation } from "@/redux/api/paymentApi";
 import { DoctorSchedule } from "@/types/DoctorSchedule";
 
 import { dateFormatter } from "@/utils/dateFormatter";
@@ -43,8 +45,6 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
 
   const doctorSchedules = data?.doctorSchedules;
 
-  console.log(doctorSchedules);
-
   const currentDate = new Date();
   const today = currentDate.toLocaleDateString("en-US", { weekday: "long" });
 
@@ -75,7 +75,6 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
     });
   const schedulesOfTomorrow = nextDoctorSchedules?.doctorSchedules;
 
-  console.log("scdl", doctorSchedules);
   const availableSlots = doctorSchedules?.data?.filter(
     (doctor: DoctorSchedule) => !doctor.isBooked
   );
@@ -84,28 +83,30 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
     (doctor: DoctorSchedule) => !doctor.isBooked
   );
 
-  //   const [createAppointment] = useCreateAppointmentMutation();
-  //   const [initialPayment] = useInitialPaymentMutation();
+  const [createAppointment] = useCreateAppointmentMutation();
+  const [initialPayment] = useInitialPaymentMutation();
 
   const handleBookAppointment = async () => {
-    // try {
-    //   if (id && scheduleId) {
-    //     // const res = await createAppointment({
-    //     //   doctorId: id,
-    //     //   scheduleId,
-    //     // }).unwrap();
+    try {
+      if (id && scheduleId) {
+        const res = await createAppointment({
+          doctorId: id,
+          scheduleId,
+        }).unwrap();
 
-    //     // if (res.id) {
-    //       //   const response = await initialPayment(res.id).unwrap();
-    //       //   if (response.paymentUrl) {
-    //       //     router.push(response.paymentUrl);
-    //       //   }
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    console.log("first");
-    //   }
+        console.log("pay", res);
+        if (res?.data.id) {
+          const response = await initialPayment(res.data.id).unwrap();
+          console.log("payurl", response.data.paymentUrl);
+          if (response?.data.paymentUrl) {
+            console.log("all okay");
+            router.push(response.data.paymentUrl);
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -29,7 +29,7 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
   const specialties = doctor.doctorSpecialties.map(
     (ds: any) => ds.specialties.title
   );
-
+  console.log("doctor", doctor);
   return (
     <Container>
       <Box color="secondary.main" my={5}>
