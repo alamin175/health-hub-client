@@ -4,7 +4,7 @@ import BaseInput from "@/components/Ui/Forms/BaseInput";
 import FileUploader from "@/components/Ui/Forms/FileUploader";
 import { useCreateDoctorMutation } from "@/redux/api/doctorApi";
 import { modifyPayload } from "@/utils/modifyPayload";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -29,11 +29,13 @@ const CreateDoctor = () => {
         setLoading(false);
         router.push("/dashboard/admin/doctors");
       }
-    } catch (err) {
-      console.error(err);
-      //@ts-ignore
-      toast.error(err?.data?.message || "An error occurred.");
-      setLoading(false);
+    } catch (err: unknown) {
+      // Replace `any` with `unknown`
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unexpected error occurred.");
+      }
     }
   };
   return (

@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Container, Stack, Typography } from "@mui/material";
+import { Box, Chip, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import DashedLine from "../components/DashedLine";
 import DoctorScheduleSlots from "../components/DoctorScheduleSlots";
@@ -22,9 +22,29 @@ const InfoBoxStyles = {
   },
 };
 
+type Specialty = {
+  specialties: {
+    title: string;
+  };
+};
+
+type Doctor = {
+  id: string;
+  name: string;
+  profilePhoto: string;
+  designation: string;
+  currentWorkingPlace: string;
+  apointmentFee: number;
+  experience: number;
+  qualification: string;
+  averageRating: number;
+  contactNumber: string;
+  doctorSpecialties: Specialty[];
+};
+
 const DoctorsProfilePage = async ({ params }: PropTypes) => {
   const res = await fetch(`http://localhost:5000/api/v1/doctor/${params.id}`);
-  const { data: doctor } = await res.json();
+  const { data: doctor }: { data: Doctor } = await res.json();
 
   const specialties = doctor.doctorSpecialties.map(
     (ds: any) => ds.specialties.title

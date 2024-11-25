@@ -3,12 +3,10 @@ import {
   Box,
   Button,
   Container,
-  Grid,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import React from "react";
 import Link from "next/link";
@@ -35,12 +33,7 @@ interface PatientFormData {
 
 const Register = () => {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<PatientFormData>();
+  const { register, handleSubmit } = useForm<PatientFormData>();
   const onSubmit: SubmitHandler<PatientFormData> = async (values) => {
     const data = modifyPayload(values);
     try {
@@ -64,8 +57,13 @@ const Register = () => {
         }
         console.log(res);
       }
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (err: unknown) {
+      // Replace `any` with `unknown`
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unexpected error occurred.");
+      }
     }
   };
   return (

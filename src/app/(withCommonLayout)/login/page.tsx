@@ -3,12 +3,10 @@ import {
   Box,
   Button,
   Container,
-  Grid,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import LoginIcon from "@mui/icons-material/Login";
 import React from "react";
 import Link from "next/link";
@@ -29,7 +27,6 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -44,8 +41,12 @@ const Login = () => {
       } else {
         toast.error(info?.message);
       }
-    } catch (err: any) {
-      console.error(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unexpected error occurred.");
+      }
     }
   };
   return (

@@ -1,8 +1,6 @@
 "use client";
 import { getTimeIn12HourFormat } from "@/app/(withDashboardLayout)/dashboard/doctor/schedules/components/DoctorScheduleModal/MultipleSelectSchedule";
 import { useCreateAppointmentMutation } from "@/redux/api/appointmentApi";
-// import { useCreateAppointmentMutation } from "@/redux/api/appointmentApi";
-// import { useInitialPaymentMutation } from "@/redux/api/paymentApi";
 import { useGetAllDoctorSchedulesQuery } from "@/redux/api/doctorSchedules";
 import { useInitialPaymentMutation } from "@/redux/api/paymentApi";
 import { DoctorSchedule } from "@/types/DoctorSchedule";
@@ -21,27 +19,30 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
 
   const router = useRouter();
 
-  const query: Record<string, any> = {};
+  // Define stricter query object type
+  const query: {
+    doctorId: string;
+    startDate: string;
+    endDate: string;
+  } = {
+    doctorId: id,
+    startDate: dayjs(new Date())
+      .utc()
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+    endDate: dayjs(new Date())
+      .utc()
+      .hour(23)
+      .minute(59)
+      .second(59)
+      .millisecond(999)
+      .toISOString(),
+  };
 
-  query["doctorId"] = id;
-
-  query["startDate"] = dayjs(new Date())
-    .utc()
-    .hour(0)
-    .minute(0)
-    .second(0)
-    .millisecond(0)
-    .toISOString();
-
-  query["endDate"] = dayjs(new Date())
-    .utc()
-    .hour(23)
-    .minute(59)
-    .second(59)
-    .millisecond(999)
-    .toISOString();
-
-  const { data, isLoading } = useGetAllDoctorSchedulesQuery({ ...query });
+  const { data, isLoading } = useGetAllDoctorSchedulesQuery(query);
 
   const doctorSchedules = data?.doctorSchedules;
 
@@ -52,27 +53,27 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
   nextDate.setDate(currentDate.getDate() + 1);
   const tomorrow = nextDate.toLocaleDateString("en-US", { weekday: "long" });
 
-  // query params for next date
-  query.startDate = dayjs(nextDate)
-    .utc()
-    .hour(0)
-    .minute(0)
-    .second(0)
-    .millisecond(0)
-    .toISOString();
+  // Update query params for the next date
+  const nextDayQuery = {
+    ...query,
+    startDate: dayjs(nextDate)
+      .utc()
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+    endDate: dayjs(nextDate)
+      .utc()
+      .hour(23)
+      .minute(59)
+      .second(59)
+      .millisecond(999)
+      .toISOString(),
+  };
 
-  query.endDate = dayjs(nextDate)
-    .utc()
-    .hour(23)
-    .minute(59)
-    .second(59)
-    .millisecond(999)
-    .toISOString();
-
-  const { data: nextDoctorSchedules, isLoading: loading } =
-    useGetAllDoctorSchedulesQuery({
-      ...query,
-    });
+  const { data: nextDoctorSchedules } =
+    useGetAllDoctorSchedulesQuery(nextDayQuery);
   const schedulesOfTomorrow = nextDoctorSchedules?.doctorSchedules;
 
   const availableSlots = doctorSchedules?.data?.filter(
@@ -161,35 +162,29 @@ const DoctorScheduleSlots = ({ id }: { id: string }) => {
         <Box sx={{ borderBottom: "2px dashed #d0d0d0", mt: 2, mb: 3 }} />
         <Stack direction="row" alignItems="center" flexWrap="wrap" gap={2}>
           {availableNextDaySlots?.length ? (
-            isLoading ? (
-              "Loading..."
-            ) : (
-              availableNextDaySlots?.map((doctorSchedule: DoctorSchedule) => {
-                const formattedTimeSlot = `${getTimeIn12HourFormat(
-                  doctorSchedule?.schedule?.startDate
-                )} - ${getTimeIn12HourFormat(
-                  doctorSchedule?.schedule?.endDate
-                )}`;
+            availableNextDaySlots?.map((doctorSchedule: DoctorSchedule) => {
+              const formattedTimeSlot = `${getTimeIn12HourFormat(
+                doctorSchedule?.schedule?.startDate
+              )} - ${getTimeIn12HourFormat(doctorSchedule?.schedule?.endDate)}`;
 
-                return (
-                  <Button
-                    key={doctorSchedule?.scheduleId}
-                    color="primary"
-                    onClick={() => setScheduleId(doctorSchedule?.scheduleId)}
-                    variant={`${
-                      doctorSchedule?.scheduleId === scheduleId
-                        ? "contained"
-                        : "outlined"
-                    }`}
-                  >
-                    {formattedTimeSlot}
-                  </Button>
-                );
-              })
-            )
+              return (
+                <Button
+                  key={doctorSchedule?.scheduleId}
+                  color="primary"
+                  onClick={() => setScheduleId(doctorSchedule?.scheduleId)}
+                  variant={`${
+                    doctorSchedule?.scheduleId === scheduleId
+                      ? "contained"
+                      : "outlined"
+                  }`}
+                >
+                  {formattedTimeSlot}
+                </Button>
+              );
+            })
           ) : (
             <span style={{ color: "red" }}>
-              No Schedule is Available Today!
+              No Schedule is Available Tomorrow!
             </span>
           )}
         </Stack>
