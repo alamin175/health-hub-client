@@ -1,13 +1,11 @@
 import SimpleModal from "@/components/Shared/Modal/SimpleModal";
 import BaseDatePicker from "@/components/Ui/Forms/BaseDatePicker";
 import BaseForm from "@/components/Ui/Forms/BaseForm";
-import BaseInput from "@/components/Ui/Forms/BaseInput";
 import BaseTimePicker from "@/components/Ui/Forms/BaseTimePicker";
-import FileUploader from "@/components/Ui/Forms/FileUploader";
 import { useCreateScheduleMutation } from "@/redux/api/scheduleApi";
 import { dateFormatter } from "@/utils/dateFormatter";
 import { timeFormatter } from "@/utils/timeFormatter";
-import { Box, Button, Grid, Input, Stack, TextField } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 

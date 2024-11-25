@@ -13,44 +13,54 @@ import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "sonner";
 
+interface IScheduleTable {
+  sl: number;
+  id: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+}
+
 const Schedules = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [allSchedule, setAllSchedule] = useState<any>([]);
+  const [allSchedule, setAllSchedule] = useState<IScheduleTable[]>([]); // Typed state
   const { data, isLoading, refetch } = useGetAllScheduleQuery({});
   const [deleteSchedule] = useDeleteScheduleMutation();
 
-  // @ts-ignore
-  const schedules = data?.schedules;
-  // @ts-ignore
-  const meta = data?.meta;
+  // Type `data` explicitly
+  const schedules: ISchedule[] | undefined = data?.schedules;
 
+  // Process data for the table
   useEffect(() => {
-    const updateData = schedules?.map((schedule: ISchedule, index: number) => {
-      return {
-        sl: index + 1,
-        id: schedule?.id,
-        startDate: dateFormatter(schedule.startDate),
-        endDate: dateFormatter(schedule.endDate),
-        startTime: dayjs(schedule?.startDate).format("hh:mm a"),
-        endTime: dayjs(schedule?.endDate).format("hh:mm a"),
-      };
-    });
-    setAllSchedule(updateData);
+    const updateData = schedules?.map((schedule: ISchedule, index: number) => ({
+      sl: index + 1,
+      id: schedule?.id,
+      startDate: dateFormatter(schedule.startDate),
+      endDate: dateFormatter(schedule.endDate),
+      startTime: dayjs(schedule?.startDate).format("hh:mm a"),
+      endTime: dayjs(schedule?.endDate).format("hh:mm a"),
+    }));
+    setAllSchedule(updateData || []);
   }, [schedules]);
-  console.log("shcedule", allSchedule);
 
   const handleDelete = async (id: string) => {
     try {
       const response = await deleteSchedule(id).unwrap();
       if (response?.data?.id) {
-        toast.success(response?.message || "Specialty deleted successfully");
+        toast.success(response?.message || "Schedule deleted successfully");
         refetch();
       }
-    } catch (err: any) {
-      toast.error("Failed to delete specialty");
-      console.error(err.message);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "message" in err) {
+        toast.error((err as { message: string }).message);
+      } else {
+        toast.error("Failed to delete schedule");
+      }
+      console.error(err);
     }
   };
+
   const columns = [
     { label: "Start Date", key: "startDate" },
     { label: "End Date", key: "endDate" },
@@ -59,7 +69,7 @@ const Schedules = () => {
     {
       label: "Action",
       key: "action",
-      render: (row: any) => (
+      render: (row: IScheduleTable) => (
         <IconButton
           sx={{ color: "red" }}
           aria-label="delete"

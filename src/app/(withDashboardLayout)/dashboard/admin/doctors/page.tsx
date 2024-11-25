@@ -10,20 +10,34 @@ import {
   Box,
   Button,
   IconButton,
-  Input,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
+interface DoctorSpecialty {
+  name: string;
+}
+
+interface Doctor {
+  id: string;
+  name: string;
+  email: string;
+  contactNumber: string;
+  qualification: string;
+  experience: number;
+  apointmentFee: number;
+  profilePhoto: string;
+  doctorSpecialties: DoctorSpecialty[];
+}
+
 const DoctorPage = () => {
   const [deleteDoctor] = useDeleteDoctorMutation();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const query: Record<string, any> = {};
+  const query: Record<string, string> = {};
   const debounceTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 500,
@@ -32,8 +46,8 @@ const DoctorPage = () => {
   if (!!debounceTerm) {
     query["searchTerm"] = searchTerm;
   }
-  const { data, isLoading, refetch } = useGetAllDoctorsQuery({ ...query });
-  const doctors = data?.doctors;
+  const { data, isLoading, refetch } = useGetAllDoctorsQuery(query);
+  const doctors: Doctor[] = data?.doctors || [];
   const meta = data?.meta;
   console.log(meta);
 
@@ -45,16 +59,22 @@ const DoctorPage = () => {
         toast.success(res?.message);
         refetch();
       }
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Error deleting doctor");
-      console.error(err);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "data" in err) {
+        const errorMessage = (err as { data?: { message?: string } }).data
+          ?.message;
+        toast.error(errorMessage || "Error deleting doctor");
+      } else {
+        console.error(err);
+      }
     }
   };
+
   const columns = [
     {
       label: "S.No.",
       key: "serial",
-      render: (_: any, index: number) => index + 1, // Dynamically generate serial numbers
+      render: (_: Doctor, index: number) => index + 1,
     },
     {
       label: "Name",
@@ -79,11 +99,9 @@ const DoctorPage = () => {
     {
       label: "Specialties",
       key: "doctorSpecialties",
-      render: (row: any) =>
+      render: (row: Doctor) =>
         row.doctorSpecialties.length > 0
-          ? row.doctorSpecialties
-              .map((specialty: any) => specialty.name)
-              .join(", ")
+          ? row.doctorSpecialties.map((specialty) => specialty.name).join(", ")
           : "N/A",
     },
     {
@@ -93,12 +111,12 @@ const DoctorPage = () => {
     {
       label: "Profile Photo",
       key: "profilePhoto",
-      render: (row: any) => <Avatar alt={row.name} src={row.profilePhoto} />,
+      render: (row: Doctor) => <Avatar alt={row.name} src={row.profilePhoto} />,
     },
     {
       label: "Action",
       key: "action",
-      render: (row: any) => (
+      render: (row: Doctor) => (
         <IconButton
           sx={{ color: "red" }}
           aria-label="delete"

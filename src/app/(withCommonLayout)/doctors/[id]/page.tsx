@@ -23,9 +23,7 @@ const InfoBoxStyles = {
 };
 
 type Specialty = {
-  specialties: {
-    title: string;
-  };
+  title: string;
 };
 
 type Doctor = {
@@ -39,16 +37,18 @@ type Doctor = {
   qualification: string;
   averageRating: number;
   contactNumber: string;
-  doctorSpecialties: Specialty[];
+  doctorSpecialties: { specialties: Specialty }[];
 };
 
 const DoctorsProfilePage = async ({ params }: PropTypes) => {
   const res = await fetch(`http://localhost:5000/api/v1/doctor/${params.id}`);
   const { data: doctor }: { data: Doctor } = await res.json();
 
+  // Map specialties explicitly
   const specialties = doctor.doctorSpecialties.map(
-    (ds: any) => ds.specialties.title
+    (ds: { specialties: Specialty }) => ds.specialties.title
   );
+
   console.log("doctor", doctor);
   return (
     <Container>
@@ -102,7 +102,7 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
                       Specialties in
                     </Typography>
                     <Box>
-                      {specialties.map((sp: any) => (
+                      {specialties.map((sp: string) => (
                         <Chip
                           key={sp}
                           label={sp}
