@@ -1,7 +1,6 @@
 "use client";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "../theme/theme";
-import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 

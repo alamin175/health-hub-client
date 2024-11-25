@@ -1,4 +1,3 @@
-// DrawerItem.tsx
 import React, { useEffect, useState } from "react";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -17,14 +16,23 @@ interface DrawerItemProps {
   open: boolean;
 }
 
+// Define the user object structure
+interface User {
+  role: UserRole;
+  // Add other user properties if they exist
+  id?: string;
+  email?: string;
+  name?: string;
+}
+
 const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
-  const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState<UserRole | "">("");
 
   useEffect(() => {
-    const { role } = getUser() as any;
-    setUserRole(role);
+    const user = getUser() as User;
+    setUserRole(user?.role || "");
   }, []);
-  console.log("check", getUser());
+
   const linkPath = (path: string) => {
     // Ensure path is absolute by checking if it already starts with `/dashboard`
     return path.startsWith("/dashboard") ? path : `/dashboard/${path}`;
@@ -65,7 +73,6 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
                       {
                         minWidth: 0,
                         justifyContent: "center",
-                        // color: "primary.main",
                       },
                       open ? { mr: 3 } : { mr: "auto" },
                     ]}

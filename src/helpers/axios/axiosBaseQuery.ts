@@ -1,10 +1,7 @@
 import { Imeta } from "@/types";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-import axios from "axios";
 import type { AxiosRequestConfig, AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
-import { authKey } from "@/constance/authKey";
-import Cookies from "js-cookie";
 
 export const axiosBaseQuery =
   (
@@ -22,7 +19,7 @@ export const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers, contentType }) => {
+  async ({ url, method, data, params, contentType }) => {
     try {
       // const token = Cookies.get(authKey);
       const result = await axiosInstance({

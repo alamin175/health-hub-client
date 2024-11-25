@@ -9,7 +9,6 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const TopRatedDoctor = async () => {
