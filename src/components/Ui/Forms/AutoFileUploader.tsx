@@ -14,7 +14,6 @@ interface IFileUploadButton {
 }
 
 const AutoFileUploader = ({
-  name,
   label,
   accept,
   sx,

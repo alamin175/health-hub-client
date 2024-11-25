@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 // import AuthButton from "@/components/Ui/AuthButton/AuthButton";
 import { Container } from "@mui/material";
 import Link from "next/link";

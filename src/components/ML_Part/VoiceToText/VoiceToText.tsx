@@ -100,13 +100,13 @@ interface Window {
   webkitSpeechRecognition: any;
 }
 
-interface SpeechRecognitionEvent extends Event {
-  results: SpeechRecognitionResultList;
-}
+// interface SpeechRecognitionEvent extends Event {
+//   results: SpeechRecognitionResultList;
+// }
 
-interface SpeechRecognitionErrorEvent extends Event {
-  error: string;
-}
+// interface SpeechRecognitionErrorEvent extends Event {
+//   error: string;
+// }
 
 const ChatVoiceAndText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
@@ -135,10 +135,10 @@ const ChatVoiceAndText: React.FC = () => {
   recognition.interimResults = false;
   recognition.lang = "en-US";
 
-  const correctGrammar = (text: string): string => {
-    const doc = nlp(text);
-    return doc.normalize().text();
-  };
+  // const correctGrammar = (text: string): string => {
+  //   const doc = nlp(text);
+  //   return doc.normalize().text();
+  // };
 
   const startListening = (): void => {
     setListening(true);
