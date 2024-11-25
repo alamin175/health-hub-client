@@ -4,13 +4,6 @@ import {
   Button,
   Stack,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Avatar,
   IconButton,
 } from "@mui/material";
@@ -24,33 +17,47 @@ import {
 import { toast } from "sonner";
 import BaseTable from "@/components/Dashboard/BaseTable/BaseTable";
 
+// Define the type for a specialty
+interface Specialty {
+  id: string;
+  title: string;
+  icon: string;
+}
+
 const SpecialtiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: specialtiesData, isLoading } = useGetSpecialtiesQuery({});
   const [deleteSpecialty] = useDeleteSpecialtyMutation();
+
+  // Handle delete with correct error typing
   const handleDelete = async (id: string) => {
     try {
       const response = await deleteSpecialty(id).unwrap();
       if (response?.data?.id) {
         toast.success(response?.message || "Specialty deleted successfully");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Failed to delete specialty");
-      console.error(err.message);
+      if (err && typeof err === "object" && "message" in err) {
+        console.error((err as { message: string }).message);
+      } else {
+        console.error("Unknown error occurred");
+      }
     }
   };
 
+  // Columns should specify that the row is of type Specialty
   const columns = [
     { label: "Title", key: "title" },
     {
       label: "Icon",
       key: "icon",
-      render: (row: any) => <Avatar alt={row.title} src={row.icon} />,
+      render: (row: Specialty) => <Avatar alt={row.title} src={row.icon} />,
     },
     {
       label: "Action",
       key: "action",
-      render: (row: any) => (
+      render: (row: Specialty) => (
         <IconButton
           sx={{ color: "red" }}
           aria-label="delete"
@@ -70,54 +77,11 @@ const SpecialtiesPage = () => {
           Create Specialties
         </Button>
       </Stack>
-      {/* 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Icon</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : specialtiesData?.data?.length ? (
-              specialtiesData.data.map((specialty: any) => (
-                <TableRow key={specialty.id}>
-                  <TableCell>{specialty.title}</TableCell>
-                  <TableCell>
-                    <Avatar alt={specialty.title} src={specialty.icon} />
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => handleDelete(specialty.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  No specialties found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
 
+      {/* Use BaseTable with the correct typing */}
       <BaseTable
         columns={columns}
-        data={specialtiesData?.data || []}
+        data={specialtiesData?.data || []} // specialtiesData is typed properly
         isLoading={isLoading}
         emptyMessage="No specialties found."
       />

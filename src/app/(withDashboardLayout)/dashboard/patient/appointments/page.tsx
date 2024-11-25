@@ -1,6 +1,6 @@
 "use client";
 import { useGetMyAppointmentsQuery } from "@/redux/api/appointmentApi";
-import { Box, Chip, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import BaseChip from "@/components/Shared/BaseChip/BaseChip";
 const PatientAppointmentsPage = () => {
   const { data, isLoading } = useGetMyAppointmentsQuery({});
   const appointments = data?.appointments.data;
-  const meta = data?.meta;
+  // const meta = data?.meta;
 
   const columns: GridColDef[] = [
     {

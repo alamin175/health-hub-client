@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BaseForm from "@/components/Ui/Forms/BaseForm";
@@ -9,19 +9,21 @@ import BaseInput from "@/components/Ui/Forms/BaseInput";
 import BaseSelectField from "@/components/Ui/Forms/BaseSelectField";
 import MultipleSelectSpecialty from "../profile/components/MultipleSelectChip";
 import { Gender } from "@/types";
-import {
-  useGetDoctorQuery,
-  useUpdateDoctorMutation,
-} from "@/redux/api/doctorApi";
+import { useUpdateDoctorMutation } from "@/redux/api/doctorApi";
 import { useGetMYProfileQuery } from "@/redux/api/myProfile";
 import { toast } from "sonner";
 import { useGetSpecialtiesQuery } from "@/redux/api/specialtyApi";
 
+// Define the type for specialties
+type Specialty = {
+  specialtiesId: string;
+  isDeleted: boolean;
+};
+
 const ProfileUpdate = () => {
   const [loading, setLoading] = useState(false);
-  const [selectedSpecialty, setSelectedSpecialty] = useState([]);
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string[]>([]);
   const router = useRouter();
-  // const { id } = useParams();
 
   // Fetch current profile data
   const { data: profileData, isLoading: profileLoading } =
@@ -32,16 +34,11 @@ const ProfileUpdate = () => {
     refetch,
   } = useGetSpecialtiesQuery({});
   const [updateDoctor] = useUpdateDoctorMutation();
-  // const { getDoctor: profileData, isLoading: profileLoading } =
-  //   useGetDoctorQuery(id);
 
   useEffect(() => {
-    if (
-      profileData?.data?.doctorSpecialties &&
-      profileData.data.doctorSpecialties.length > 0
-    ) {
+    if (profileData?.data?.doctorSpecialties) {
       const currentSpecialties = profileData.data.doctorSpecialties.map(
-        (specialty: any) => specialty.specialtiesId
+        (specialty: { specialtiesId: string }) => specialty.specialtiesId
       );
       setSelectedSpecialty(currentSpecialties);
     }
@@ -65,15 +62,13 @@ const ProfileUpdate = () => {
     setLoading(true);
 
     try {
-      // Prepare specialties data
-      const specialties = selectedSpecialty.map((specialtiesId: any) => ({
-        specialtiesId,
-        isDeleted: false,
-      }));
+      const specialties: Specialty[] = selectedSpecialty.map(
+        (specialtiesId) => ({
+          specialtiesId,
+          isDeleted: false,
+        })
+      );
 
-      console.log("sp", profileData);
-
-      // Filter out excluded fields
       const excludedFields: Array<keyof typeof values> = [
         "email",
         "id",
@@ -93,11 +88,11 @@ const ProfileUpdate = () => {
 
       const updatedValues = Object.fromEntries(
         Object.entries(values).filter(
-          ([key]) => !excludedFields.includes(key as any)
+          ([key]) => !excludedFields.includes(key as keyof typeof values)
         )
       );
 
-      // Convert numeric fields to numbers
+      // Convert numeric fields
       if (updatedValues.experience) {
         updatedValues.experience = Number(updatedValues.experience);
       }
@@ -105,16 +100,12 @@ const ProfileUpdate = () => {
         updatedValues.apointmentFee = Number(updatedValues.apointmentFee);
       }
 
-      // Add specialties to the payload
       updatedValues.specialties = specialties;
 
-      // Use the doctor ID from profile data
       const updateData = {
         id: profileData?.data?.id,
         body: updatedValues,
       };
-
-      console.log("Sending update data:", updateData); // For debugging
 
       const result = await updateDoctor(updateData).unwrap();
 
@@ -125,9 +116,13 @@ const ProfileUpdate = () => {
       } else {
         toast.error("Failed to update profile");
       }
-    } catch (error: any) {
-      console.error("Update error:", error);
-      toast.error(error?.data?.message || "Something went wrong!");
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "data" in error) {
+        const apiError = error as { data: { message?: string } };
+        toast.error(apiError.data?.message || "Something went wrong!");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -136,7 +131,6 @@ const ProfileUpdate = () => {
   if (profileLoading || specialtiesLoading) {
     return <Typography>Loading...</Typography>;
   }
-
   return (
     <BaseForm onSubmit={handleFormSubmit} defaultValues={defaultValues}>
       <Box sx={{ display: "flex", my: "7px", justifyContent: "center" }}>
@@ -158,7 +152,7 @@ const ProfileUpdate = () => {
             type="email"
             label="Email"
             sx={{ width: "100%" }}
-            //@ts-ignore
+            //@ts-expect-error
             disabled
           />
         </Grid>

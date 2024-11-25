@@ -10,7 +10,7 @@ import { getTimeIn12HourFormat } from "../schedules/components/DoctorScheduleMod
 const PatientAppointmentsPage = () => {
   const { data, isLoading } = useGetMyAppointmentsQuery({});
   const appointments = data?.appointments.data;
-  const meta = data?.meta;
+  // const meta = data?.meta;
   console.log("dt", data);
 
   const columns: GridColDef[] = [
