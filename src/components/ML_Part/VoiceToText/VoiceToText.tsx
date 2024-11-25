@@ -108,9 +108,13 @@ interface SpeechRecognitionErrorEvent extends Event {
   error: string;
 }
 
-const VoiceToText: React.FC = () => {
+const ChatVoiceAndText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
+  const [messageInput, setMessageInput] = useState<string>("");
+  const [conversation, setConversation] = useState<
+    { sender: "User" | "AI"; message: string }[]
+  >([]);
 
   const SpeechRecognition =
     (window as any).SpeechRecognition ||
@@ -118,7 +122,7 @@ const VoiceToText: React.FC = () => {
 
   if (!SpeechRecognition) {
     return (
-      <div className="p-10 flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="p-10 flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-blue-200">
         <p className="text-red-600 text-lg font-medium">
           Your browser does not support speech recognition.
         </p>
@@ -146,67 +150,110 @@ const VoiceToText: React.FC = () => {
     recognition.stop();
   };
 
-  const clearTranscript = (): void => {
+  const clearChat = (): void => {
     setTranscript("");
+    setConversation([]);
   };
 
-  recognition.onresult = (event: SpeechRecognitionEvent): void => {
-    const speechToText = Array.from(event.results)
-      .map((result) => result[0].transcript)
-      .join("");
-    const correctedText = correctGrammar(speechToText);
-    setTranscript((prev) => `${prev} ${correctedText}`);
+  const handleSendMessage = async (): Promise<void> => {
+    if (!messageInput.trim()) return;
+
+    const userMessage = messageInput.trim();
+    setConversation((prev) => [
+      ...prev,
+      { sender: "User", message: userMessage },
+    ]);
+    setMessageInput("");
+
+    // Simulate AI response (replace this with your actual AI API call)
+    const aiResponse = await getAIResponse(userMessage);
+    setConversation((prev) => [...prev, { sender: "AI", message: aiResponse }]);
   };
 
-  recognition.onerror = (event: SpeechRecognitionErrorEvent): void => {
-    console.error("Speech recognition error:", event.error);
+  const getAIResponse = async (userMessage: string): Promise<string> => {
+    // Mock AI response (replace with real API integration)
+    return `You asked: "${userMessage}". Here's some detailed AI information...`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-10">
-      <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
-          Chat & Voice-to-Text
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-200 flex flex-col items-center justify-start p-6">
+      <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
+        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">
+          AI Doctor
         </h1>
-        <div className="flex justify-center space-x-4 mb-6">
-          <button
-            className={`p-3 rounded-md text-white font-semibold ${
-              listening
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-            onClick={startListening}
-            disabled={listening}
-          >
-            Start Listening
-          </button>
-          <button
-            className={`p-3 rounded-md text-white font-semibold ${
-              !listening
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-red-600 hover:bg-red-700"
-            }`}
-            onClick={stopListening}
-            disabled={!listening}
-          >
-            Stop Listening
-          </button>
-          <button
-            className="p-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md"
-            onClick={clearTranscript}
-          >
-            Clear Transcript
-          </button>
+
+        {/* Chat Display */}
+        <div className="bg-gray-100 p-6 rounded-lg shadow-inner h-[500px] overflow-y-auto mb-6 space-y-4">
+          {conversation.map((chat, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                chat.sender === "User" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg shadow-md ${
+                  chat.sender === "User"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-gray-800"
+                }`}
+              >
+                <p className="text-sm">{chat.message}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="bg-gray-50 p-4 rounded-md shadow-inner h-64 overflow-y-auto">
-          <p className="whitespace-pre-line">
-            <strong className="text-gray-600">Transcript:</strong>
-            {transcript || " Your text will appear here..."}
-          </p>
+
+        {/* Input and Controls */}
+        <div className="flex flex-col space-y-4">
+          <textarea
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            placeholder="Type your message here..."
+            className="w-full h-20 p-4 border text-black rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          ></textarea>
+          <div className="flex justify-between items-center">
+            <button
+              onClick={handleSendMessage}
+              className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
+            >
+              📤 Send Message
+            </button>
+            <button
+              onClick={clearChat}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
+            >
+              🧹 Clear Chat
+            </button>
+          </div>
+          <div className="flex justify-between mt-4">
+            <button
+              className={`p-4 w-40 rounded-lg text-white font-semibold shadow-lg transition duration-300 ${
+                listening
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              }`}
+              onClick={startListening}
+              disabled={listening}
+            >
+              🎤 Start Voice
+            </button>
+            <button
+              className={`p-4 w-40 rounded-lg text-white font-semibold shadow-lg transition duration-300 ${
+                !listening
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
+              }`}
+              onClick={stopListening}
+              disabled={!listening}
+            >
+              🛑 Stop Voice
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default VoiceToText;
+export default ChatVoiceAndText;

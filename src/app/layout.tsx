@@ -49,7 +49,7 @@ export default function RootLayout({
                   </div>
                 </a>
               </div> */}
-              <Link href="/dashboard/ai-doctor">
+              <Link href="/ai-doctor">
                 <DocButton />
               </Link>
               {children}
