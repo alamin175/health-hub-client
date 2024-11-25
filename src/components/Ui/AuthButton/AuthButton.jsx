@@ -11,6 +11,8 @@ const AuthButton = () => {
   console.log(user);
   const handleLogOut = () => {
     Cookies.remove(authKey);
+    Cookies.remove("refreshToken");
+
     router.refresh();
     toast.success("Logout successfully");
   };

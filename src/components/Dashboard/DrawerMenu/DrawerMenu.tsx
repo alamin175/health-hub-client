@@ -24,7 +24,7 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ open }) => {
     const { role } = getUser() as any;
     setUserRole(role);
   }, []);
-  console.log(userRole);
+  console.log("check", getUser());
   const linkPath = (path: string) => {
     // Ensure path is absolute by checking if it already starts with `/dashboard`
     return path.startsWith("/dashboard") ? path : `/dashboard/${path}`;

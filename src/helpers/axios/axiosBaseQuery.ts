@@ -3,6 +3,8 @@ import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import axios from "axios";
 import type { AxiosRequestConfig, AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
+import { authKey } from "@/constance/authKey";
+import Cookies from "js-cookie";
 
 export const axiosBaseQuery =
   (
@@ -22,6 +24,7 @@ export const axiosBaseQuery =
   > =>
   async ({ url, method, data, params, headers, contentType }) => {
     try {
+      // const token = Cookies.get(authKey);
       const result = await axiosInstance({
         url: baseUrl + url,
         method,
@@ -30,6 +33,11 @@ export const axiosBaseQuery =
         headers: {
           "Content-Type": contentType || "application/json",
         },
+        // headers: {
+        //   ...headers,
+        //   Authorization: token,
+        //   "Content-Type": contentType || "application/json",
+        // },
       });
       return { data: result.data };
     } catch (axiosError) {
