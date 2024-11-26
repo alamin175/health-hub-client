@@ -106,7 +106,6 @@
 // }
 
 "use client";
-
 import React, { useState } from "react";
 
 // Extend the global window interface for SpeechRecognition
@@ -121,6 +120,7 @@ const ChatVoiceAndText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
   const [messageInput, setMessageInput] = useState<string>("");
+
   const [conversation, setConversation] = useState<
     { sender: "User" | "AI"; message: string }[]
   >([]);
@@ -221,6 +221,14 @@ const ChatVoiceAndText: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Display Transcript */}
+        <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
+          <h2 className="text-xl font-medium text-gray-800 mb-4">Transcript</h2>
+          <div className="bg-gray-100 p-4 rounded-lg shadow-inner h-20 overflow-y-auto">
+            <p className="text-sm text-gray-700">{transcript}</p>
+          </div>
         </div>
 
         {/* Input and Controls */}

@@ -16,14 +16,21 @@ export interface Doctor {
   createdAt: string;
   updatedAt: string;
   averageRating: number;
-  review: any[]; // You may want to specify the structure of the review object if known
+  review: Review[]; // Defined `Review` type below
   doctorSpecialties: DoctorSpecialty[];
 }
 
 export interface DoctorSpecialty {
   specialtiesId: string;
   doctorId: string;
-  specialties: any; // You may want to specify the structure of the specialties object if known
+  specialties: ISpecialties; // Replaced `any` with `ISpecialties`
+}
+
+export interface ISpecialties {
+  specialtiesId: string;
+  name: string; // Added field for specialty name as an example
+  description?: string; // Optional description field
+  isDeleted?: boolean;
 }
 
 export interface IDoctor {
@@ -39,12 +46,14 @@ export interface IDoctor {
   qualification: string;
   currentWorkingPlace: string;
   designation: string;
-  specialties?: ISpecialties[];
+  specialties?: ISpecialties[]; // Replaced `any` with `ISpecialties[]`
 }
 
-export interface ISpecialties {
-  specialtiesId: string;
-  isDeleted?: null;
+export interface Review {
+  reviewerId: string;
+  comment: string;
+  rating: number; // Rating out of 5, for example
+  createdAt: string;
 }
 
 export interface IDoctorFormData {

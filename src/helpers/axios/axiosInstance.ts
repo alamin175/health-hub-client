@@ -28,7 +28,7 @@ axiosInstance.interceptors.request.use(
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-  //@ts-ignore
+  //@ts-expect-error only for axios
   function (response) {
     const responseObject: ResponseData = {
       data: response?.data,

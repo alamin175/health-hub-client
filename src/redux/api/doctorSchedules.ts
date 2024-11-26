@@ -2,9 +2,32 @@ import { Imeta } from "@/types";
 import { baseApi } from "./baseApi";
 import { tagTypes } from "./tagTypeList";
 
+// Define types for the arguments and responses
+type DoctorSchedule = {
+  id: string;
+  doctorId: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  isAvailable: boolean;
+  [key: string]: unknown; // For extendable properties, if needed
+};
+
+type GetAllSchedulesArg = {
+  page?: number;
+  limit?: number;
+  doctorId?: string;
+  [key: string]: string | number | undefined; // Extendable for additional query params
+};
+
+type GetAllSchedulesResponse = {
+  doctorSchedules: DoctorSchedule[];
+  meta: Imeta;
+};
+
 export const doctorScheduleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createDoctorSchedule: build.mutation({
+    createDoctorSchedule: build.mutation<void, Partial<DoctorSchedule>>({
       query: (data) => ({
         url: "/doctor-schedule",
         method: "POST",
@@ -12,30 +35,32 @@ export const doctorScheduleApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.doctorSchedule],
     }),
-    getAllDoctorSchedules: build.query({
-      query: (arg: Record<string, any>) => {
-        return {
-          url: "/doctor-schedule",
-          method: "GET",
-          params: arg,
-        };
-      },
-      transformResponse: (response: [], meta: Imeta) => {
-        return {
-          doctorSchedules: response,
-          meta,
-        };
-      },
+
+    getAllDoctorSchedules: build.query<
+      GetAllSchedulesResponse,
+      GetAllSchedulesArg
+    >({
+      query: (arg) => ({
+        url: "/doctor-schedule",
+        method: "GET",
+        params: arg,
+      }),
+      transformResponse: (response: DoctorSchedule[], meta: Imeta) => ({
+        doctorSchedules: response,
+        meta,
+      }),
       providesTags: [tagTypes.doctorSchedule],
     }),
-    getDoctorSchedule: build.query({
-      query: (id: string | string[] | undefined) => ({
+
+    getDoctorSchedule: build.query<DoctorSchedule, string>({
+      query: (id) => ({
         url: `/doctor-schedule/${id}`,
         method: "GET",
       }),
       providesTags: [tagTypes.doctorSchedule],
     }),
-    getMySchedule: build.query({
+
+    getMySchedule: build.query<DoctorSchedule[], void>({
       query: () => ({
         url: "/doctor-schedule/my-schedules",
         method: "GET",
@@ -43,8 +68,8 @@ export const doctorScheduleApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.doctorSchedule],
     }),
 
-    deleteDoctorSchedule: build.mutation({
-      query: (id: string) => ({
+    deleteDoctorSchedule: build.mutation<void, string>({
+      query: (id) => ({
         url: `/doctor-schedule/${id}`,
         method: "DELETE",
       }),

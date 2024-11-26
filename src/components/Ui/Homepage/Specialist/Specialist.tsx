@@ -1,13 +1,26 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
+// Define a type for the specialties
+type Specialty = {
+  id: string;
+  title: string;
+  icon: string;
+};
+
 const Specialist = async () => {
   const res = await fetch("http://localhost:5000/api/v1/specialties", {
     next: {
-      revalidate: 30,
+      revalidate: 30, // Enables ISR (Incremental Static Regeneration)
     },
   });
-  const { data: specialist } = await res.json();
+
+  // Validate the response
+  if (!res.ok) {
+    throw new Error("Failed to fetch specialties");
+  }
+
+  const { data: specialist }: { data: Specialty[] } = await res.json();
 
   return (
     <Container sx={{ my: "45px" }}>
@@ -25,7 +38,7 @@ const Specialist = async () => {
           justifyContent="center"
           marginY="40px"
         >
-          {specialist.map((data: any) => (
+          {specialist.map((data) => (
             <Box
               sx={{
                 flex: 1,

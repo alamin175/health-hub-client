@@ -41,7 +41,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-function getTimeIn12HourFormat(dateTimeString: string): string {
+export function getTimeIn12HourFormat(dateTimeString: string): string {
   const date: Date = new Date(dateTimeString);
   const hours: number = date.getHours();
   const minutes: number = date.getMinutes();

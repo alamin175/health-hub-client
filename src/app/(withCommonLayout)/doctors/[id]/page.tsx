@@ -1,31 +1,15 @@
+// import { Metadata } from "next";
 import { Box, Chip, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import DashedLine from "../components/DashedLine";
 import DoctorScheduleSlots from "../components/DoctorScheduleSlots";
 
-type PropTypes = {
-  params: {
-    id: string;
-  };
-};
-
-const InfoBoxStyles = {
-  background:
-    "linear-gradient(to bottom, rgba(255,68,28,0.3), rgba(255,255,255,1) 100%);",
-  width: "100%",
-  p: 3,
-  "& h6": {
-    color: "primary.main",
-  },
-  "& p": {
-    color: "secondary.main",
-  },
-};
-
+// Type for the doctor specialties
 type Specialty = {
   title: string;
 };
 
+// Type for the doctor details
 type Doctor = {
   id: string;
   name: string;
@@ -40,7 +24,14 @@ type Doctor = {
   doctorSpecialties: { specialties: Specialty }[];
 };
 
-const DoctorsProfilePage = async ({ params }: PropTypes) => {
+// Adjusted type for Next.js page component
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+const DoctorsProfilePage = async ({ params }: PageProps) => {
   const res = await fetch(`http://localhost:5000/api/v1/doctor/${params.id}`);
   const { data: doctor }: { data: Doctor } = await res.json();
 
@@ -49,7 +40,18 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
     (ds: { specialties: Specialty }) => ds.specialties.title
   );
 
-  console.log("doctor", doctor);
+  // Optional: Generate metadata dynamically
+  // export const generateMetadata = async ({
+  //   params,
+  // }: PageProps): Promise<Metadata> => {
+  //   return {
+  //     title: `Dr. ${doctor.name} - Profile`,
+  //     description: `Profile of Dr. ${doctor.name}, ${
+  //       doctor.designation
+  //     } specializing in ${specialties.join(", ")}`,
+  //   };
+  // };
+
   return (
     <Container>
       <Box color="secondary.main" my={5}>
@@ -124,7 +126,6 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
                   <Stack direction="row">
                     <Typography
                       fontWeight={"bold"}
-                      // fontSize={20}
                       sx={{
                         color: "#141414",
                       }}
@@ -179,3 +180,6 @@ const DoctorsProfilePage = async ({ params }: PropTypes) => {
 };
 
 export default DoctorsProfilePage;
+
+// Note: The InfoBoxStyles is not defined in the original code.
+// You'll need to define this style object or remove it if not used

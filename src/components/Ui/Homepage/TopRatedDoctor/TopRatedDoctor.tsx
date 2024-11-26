@@ -11,9 +11,25 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
+// Define a type for the doctor data
+type Doctor = {
+  id: string;
+  name: string;
+  designation: string;
+  profilePhoto: string;
+  address: string;
+};
+
 const TopRatedDoctor = async () => {
   const res = await fetch("http://localhost:5000/api/v1/doctor?page=1&limit=3");
-  const { data: doctors } = await res.json();
+
+  // Validate the response and fetch data
+  if (!res.ok) {
+    throw new Error("Failed to fetch doctors");
+  }
+
+  const { data: doctors }: { data: Doctor[] } = await res.json();
+
   return (
     <Box
       sx={{
@@ -35,12 +51,12 @@ const TopRatedDoctor = async () => {
           margin="0 auto"
         >
           Access to expert physicians and surgeons, advanced technologies and
-          top-quality surgery facilities righ there.
+          top-quality surgery facilities right there.
         </Typography>
       </Box>
       <Container>
         <Grid container spacing={2} sx={{ margin: "30px auto" }}>
-          {doctors.map((doctor: any) => (
+          {doctors.map((doctor) => (
             <Grid item md={4} key={doctor.id}>
               <Card sx={{ maxWidth: 345 }}>
                 <Box
@@ -57,7 +73,7 @@ const TopRatedDoctor = async () => {
                 >
                   <CardMedia
                     component="img"
-                    alt="green iguana"
+                    alt={`${doctor.name}'s profile photo`}
                     height="140"
                     image={doctor.profilePhoto}
                   />

@@ -14,12 +14,14 @@ export interface DrawerItem {
   title: string;
   path: string;
   parentPath?: string;
-  icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string };
+  icon?: OverridableComponent<SvgIconTypeMap<object, "svg">> & {
+    muiName: string;
+  }; // Corrected type
   child?: DrawerItem[];
 }
 
 export type ResponseData = {
-  data?: any;
+  data?: unknown; // Corrected type
   meta?: Imeta;
 };
 
