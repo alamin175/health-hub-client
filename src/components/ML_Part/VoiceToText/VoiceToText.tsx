@@ -106,8 +106,7 @@
 // }
 
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import nlp from "compromise";
 
 const VoiceToText: React.FC = () => {
@@ -117,11 +116,20 @@ const VoiceToText: React.FC = () => {
   const [conversation, setConversation] = useState<
     { sender: "User" | "AI"; message: string }[]
   >([]);
+  const [SpeechRecognition, setSpeechRecognition] =
+    useState<SpeechRecognition | null>(null);
 
-  const SpeechRecognition =
-    (window as any).SpeechRecognition ||
-    (window as any).webkitSpeechRecognition;
+  useEffect(() => {
+    // This code will run only on the client-side
+    const recognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (recognition) {
+      setSpeechRecognition(new recognition());
+    }
+  }, []);
 
+  // Guard clause if SpeechRecognition is not available
   if (!SpeechRecognition) {
     return (
       <div className="p-10 flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-blue-200">
@@ -132,7 +140,7 @@ const VoiceToText: React.FC = () => {
     );
   }
 
-  const recognition = new SpeechRecognition();
+  const recognition = SpeechRecognition;
   recognition.continuous = true;
   recognition.interimResults = true; // Allow real-time updates
   recognition.lang = "en-US";
