@@ -12,9 +12,6 @@ module.exports = {
     };
     return config;
   },
-  experimental: {
-    serverActions: true, // Enable Server Actions
-  },
   images: {
     domains: ["res.cloudinary.com"], // Add Cloudinary domain here
   },
