@@ -4,8 +4,8 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false, // Disabling strict checks is fine if you prefer
-    "noEmit": true, // Prevent emitting .js files
+    "strict": false, // Disable strict checks
+    "noEmit": true, // Prevent emitting .js files (no actual build)
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -18,7 +18,6 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".", // Add baseUrl for better path resolution
     "paths": {
       "@/*": ["./src/*"]
     }
