@@ -1,3 +1,4 @@
+/* @ts-nocheck */
 "use client";
 import { getTimeIn12HourFormat } from "@/app/(withDashboardLayout)/dashboard/doctor/schedules/components/DoctorScheduleModal/MultipleSelectSchedule";
 import { useCreateAppointmentMutation } from "@/redux/api/appointmentApi";

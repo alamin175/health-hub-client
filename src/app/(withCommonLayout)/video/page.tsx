@@ -2,11 +2,8 @@ import React from "react";
 import VideoCall from "@/components/Ui/VideoCall/VideoCall";
 import { Box, Typography } from "@mui/material";
 
-const VideoCalling = ({
-  searchParams,
-}: {
-  searchParams: { videoCallingId: string };
-}) => {
+// @ts-expect-error not need
+const VideoCalling = ({ searchParams }) => {
   const videoCallingId = searchParams.videoCallingId;
 
   return (

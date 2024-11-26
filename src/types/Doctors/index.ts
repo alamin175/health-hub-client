@@ -28,6 +28,7 @@ export interface DoctorSpecialty {
 
 export interface ISpecialties {
   specialtiesId: string;
+  title: string;
   name: string; // Added field for specialty name as an example
   description?: string; // Optional description field
   isDeleted?: boolean;
