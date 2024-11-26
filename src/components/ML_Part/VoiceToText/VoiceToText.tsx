@@ -105,8 +105,8 @@
 //   error: string;
 // }
 
-"use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import nlp from "compromise";
 
 const VoiceToText: React.FC = () => {
@@ -116,11 +116,11 @@ const VoiceToText: React.FC = () => {
   const [conversation, setConversation] = useState<
     { sender: "User" | "AI"; message: string }[]
   >([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // For loading animation
   const [SpeechRecognition, setSpeechRecognition] =
     useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    // This code will run only on the client-side
     const recognition =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
@@ -129,7 +129,6 @@ const VoiceToText: React.FC = () => {
     }
   }, []);
 
-  // Guard clause if SpeechRecognition is not available
   if (!SpeechRecognition) {
     return (
       <div className="p-10 flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-blue-200">
@@ -142,7 +141,7 @@ const VoiceToText: React.FC = () => {
 
   const recognition = SpeechRecognition;
   recognition.continuous = true;
-  recognition.interimResults = true; // Allow real-time updates
+  recognition.interimResults = true;
   recognition.lang = "en-US";
 
   const correctGrammar = (text: string): string => {
@@ -159,16 +158,14 @@ const VoiceToText: React.FC = () => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          // Append the final recognized text
           setMessageInput(
             (prev) => prev + correctGrammar(transcript.trim()) + " "
           );
         } else {
-          // Show interim results
           interimTranscript += transcript;
         }
       }
-      setTranscript(interimTranscript); // Optional: For displaying interim results if needed
+      setTranscript(interimTranscript);
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
@@ -195,26 +192,41 @@ const VoiceToText: React.FC = () => {
       { sender: "User", message: userMessage },
     ]);
     setMessageInput("");
+    setIsLoading(true); // Start loading animation
 
-    // Simulate AI response (replace this with your actual AI API call)
-    const aiResponse = await getAIResponse(userMessage);
-    setConversation((prev) => [...prev, { sender: "AI", message: aiResponse }]);
-  };
+    try {
+      // Send message to API
+      const response = await axios.post("http://127.0.0.1:8000/chatbot/", {
+        user_query: userMessage,
+      });
 
-  const getAIResponse = async (userMessage: string): Promise<string> => {
-    // Mock AI response (replace with real API integration)
-    return `You asked: "${userMessage}". Here's some detailed AI information...`;
+      // Assuming the API response is in the format { response: "AI's response" }
+      const aiResponse = response.data.response;
+
+      setConversation((prev) => [
+        ...prev,
+        { sender: "AI", message: aiResponse },
+      ]);
+    } catch (error) {
+      console.error("Error while fetching AI response:", error);
+      setConversation((prev) => [
+        ...prev,
+        { sender: "AI", message: "Sorry, something went wrong." },
+      ]);
+    } finally {
+      setIsLoading(false); // Stop loading animation
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-200 flex flex-col items-center justify-start p-6">
-      <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
+      <div className="w-full max-w-[80%] h-full  bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">
           AI Doctor Chat System
         </h1>
 
         {/* Chat Display */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-inner h-96 overflow-y-auto mb-6 space-y-4">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-inner h-[600px] overflow-y-auto mb-6 space-y-4">
           {conversation.map((chat, index) => (
             <div
               key={index}
@@ -223,7 +235,7 @@ const VoiceToText: React.FC = () => {
               }`}
             >
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg shadow-md ${
+                className={`max-w-xs lg:max-w-2xl text-lg px-4 py-3 rounded-lg shadow-md ${
                   chat.sender === "User"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-800"
@@ -233,6 +245,18 @@ const VoiceToText: React.FC = () => {
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="px-4 py-3 rounded-lg shadow-md bg-gray-200 text-gray-800">
+                <p className="text-sm">AI is thinking...</p>
+                <div className="w-10 h-10 flex gap-1 items-center justify-center">
+                  <div className="w-2 h-2 animate-[bounce_.6s_linear_.2s_infinite] bg-sky-600 rounded-full"></div>
+                  <div className="w-2 h-2 animate-[bounce_.6s_linear_.3s_infinite] bg-sky-600 rounded-full"></div>
+                  <div className="w-2 h-2 animate-[bounce_.6s_linear_.4s_infinite] bg-sky-600 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Input and Controls */}
