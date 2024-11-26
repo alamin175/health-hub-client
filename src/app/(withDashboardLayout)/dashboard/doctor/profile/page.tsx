@@ -3,7 +3,6 @@
 import { Box, Button, Container } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Image from "next/image";
-import React, from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 // import ProfileUpdateModal from "./components/ProfileUpdateModal";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";

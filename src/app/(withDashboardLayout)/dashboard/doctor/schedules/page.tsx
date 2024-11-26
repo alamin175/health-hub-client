@@ -37,11 +37,11 @@ interface APIResponse {
 
 const Schedules = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [allSchedule, setAllSchedule] = useState<TableRow[]>([]);
 
   const query: QueryParams = {
-    page,
+    page: 1,
   };
 
   const { data, isLoading, refetch } = useGetAllDoctorSchedulesQuery({

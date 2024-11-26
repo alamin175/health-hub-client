@@ -152,10 +152,11 @@ const ProfileUpdate = () => {
             type="email"
             label="Email"
             sx={{ width: "100%" }}
-            //@ts-expect-error
+            //@ts-expect-error: Disabling due to API limitations for now
             disabled
           />
         </Grid>
+
         <Grid item md={4}>
           <BaseInput
             size="medium"

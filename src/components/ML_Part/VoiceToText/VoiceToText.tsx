@@ -90,15 +90,12 @@
 
 // export default VoiceToText;
 
-"use client";
+// import nlp from "compromise";
 
-import React, { useState } from "react";
-import nlp from "compromise";
-
-interface Window {
-  SpeechRecognition: any;
-  webkitSpeechRecognition: any;
-}
+// interface Window {
+//   SpeechRecognition: any;
+//   webkitSpeechRecognition: any;
+// }
 
 // interface SpeechRecognitionEvent extends Event {
 //   results: SpeechRecognitionResultList;
@@ -108,6 +105,18 @@ interface Window {
 //   error: string;
 // }
 
+"use client";
+
+import React, { useState } from "react";
+
+// Extend the global window interface for SpeechRecognition
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
 const ChatVoiceAndText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
@@ -116,9 +125,9 @@ const ChatVoiceAndText: React.FC = () => {
     { sender: "User" | "AI"; message: string }[]
   >([]);
 
+  // Check if SpeechRecognition is supported
   const SpeechRecognition =
-    (window as any).SpeechRecognition ||
-    (window as any).webkitSpeechRecognition;
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     return (
@@ -130,31 +139,41 @@ const ChatVoiceAndText: React.FC = () => {
     );
   }
 
+  // Configure the SpeechRecognition instance
   const recognition = new SpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = false;
   recognition.lang = "en-US";
 
-  // const correctGrammar = (text: string): string => {
-  //   const doc = nlp(text);
-  //   return doc.normalize().text();
-  // };
+  // Handle speech recognition results
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const transcriptResult = Array.from(event.results)
+      .map((result) => result[0].transcript)
+      .join(" ");
+    setTranscript(transcriptResult);
+    setMessageInput(transcriptResult); // Automatically set it to the input field
+  };
 
+  // Start listening
   const startListening = (): void => {
     setListening(true);
     recognition.start();
   };
 
+  // Stop listening
   const stopListening = (): void => {
     setListening(false);
     recognition.stop();
   };
 
+  // Clear the chat history
   const clearChat = (): void => {
     setTranscript("");
     setConversation([]);
+    setMessageInput("");
   };
 
+  // Handle sending the message
   const handleSendMessage = async (): Promise<void> => {
     if (!messageInput.trim()) return;
 
@@ -170,8 +189,8 @@ const ChatVoiceAndText: React.FC = () => {
     setConversation((prev) => [...prev, { sender: "AI", message: aiResponse }]);
   };
 
+  // Mock AI response (replace this with your actual backend API call)
   const getAIResponse = async (userMessage: string): Promise<string> => {
-    // Mock AI response (replace with real API integration)
     return `You asked: "${userMessage}". Here's some detailed AI information...`;
   };
 
