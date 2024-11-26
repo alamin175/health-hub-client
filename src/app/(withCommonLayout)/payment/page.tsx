@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react"; // Import Suspense
 import { useSearchParams } from "next/navigation"; // Correct hook to access searchParams
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -7,7 +8,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ErrorIcon from "@mui/icons-material/Error";
 import Link from "next/link";
 
-const PaymentStatusPage = () => {
+const PaymentStatusContent = () => {
   const searchParams = useSearchParams(); // Access query params
   const status = searchParams.get("status"); // Retrieve the 'status' param
   console.log("status", status);
@@ -34,38 +35,44 @@ const PaymentStatusPage = () => {
   }
 
   return (
+    <Box
+      sx={{
+        mx: "auto",
+        width: "100%",
+        maxWidth: 500,
+        borderRadius: 2,
+        boxShadow: 1,
+        py: 5,
+        px: 2,
+        mt: { xs: 5, md: 10 },
+      }}
+    >
+      <Stack justifyContent="center" alignItems="center">
+        {icon}
+        <Typography variant="h5" my={2}>
+          {title}
+        </Typography>
+        {status === "success" && (
+          <Button size="small" variant="outlined">
+            <Link href="/dashboard/patient/appointments">Go To Dashboard</Link>
+          </Button>
+        )}
+        {status !== "success" && (
+          <Button size="small" variant="outlined">
+            <Link href="/doctors">Book Again</Link>
+          </Button>
+        )}
+      </Stack>
+    </Box>
+  );
+};
+
+const PaymentStatusPage = () => {
+  return (
     <Container>
-      <Box
-        sx={{
-          mx: "auto",
-          width: "100%",
-          maxWidth: 500,
-          borderRadius: 2,
-          boxShadow: 1,
-          py: 5,
-          px: 2,
-          mt: { xs: 5, md: 10 },
-        }}
-      >
-        <Stack justifyContent="center" alignItems="center">
-          {icon}
-          <Typography variant="h5" my={2}>
-            {title}
-          </Typography>
-          {status === "success" && (
-            <Button size="small" variant="outlined">
-              <Link href="/dashboard/patient/appointments">
-                Go To Dashboard
-              </Link>
-            </Button>
-          )}
-          {status !== "success" && (
-            <Button size="small" variant="outlined">
-              <Link href="/doctors">Book Again</Link>
-            </Button>
-          )}
-        </Stack>
-      </Box>
+      <Suspense fallback={<div>Loading...</div>}>
+        <PaymentStatusContent />
+      </Suspense>
     </Container>
   );
 };

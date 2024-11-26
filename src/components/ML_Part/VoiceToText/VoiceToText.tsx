@@ -106,28 +106,21 @@
 // }
 
 "use client";
+
 import React, { useState } from "react";
+import nlp from "compromise";
 
-// Extend the global window interface for SpeechRecognition
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
-}
-
-const ChatVoiceAndText: React.FC = () => {
+const VoiceToText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
   const [messageInput, setMessageInput] = useState<string>("");
-
   const [conversation, setConversation] = useState<
     { sender: "User" | "AI"; message: string }[]
   >([]);
 
-  // Check if SpeechRecognition is supported
   const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+    (window as any).SpeechRecognition ||
+    (window as any).webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     return (
@@ -139,41 +132,52 @@ const ChatVoiceAndText: React.FC = () => {
     );
   }
 
-  // Configure the SpeechRecognition instance
   const recognition = new SpeechRecognition();
   recognition.continuous = true;
-  recognition.interimResults = false;
+  recognition.interimResults = true; // Allow real-time updates
   recognition.lang = "en-US";
 
-  // Handle speech recognition results
-  recognition.onresult = (event: SpeechRecognitionEvent) => {
-    const transcriptResult = Array.from(event.results)
-      .map((result) => result[0].transcript)
-      .join(" ");
-    setTranscript(transcriptResult);
-    setMessageInput(transcriptResult); // Automatically set it to the input field
+  const correctGrammar = (text: string): string => {
+    const doc = nlp(text);
+    return doc.normalize().text();
   };
 
-  // Start listening
   const startListening = (): void => {
     setListening(true);
     recognition.start();
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let interimTranscript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          // Append the final recognized text
+          setMessageInput(
+            (prev) => prev + correctGrammar(transcript.trim()) + " "
+          );
+        } else {
+          // Show interim results
+          interimTranscript += transcript;
+        }
+      }
+      setTranscript(interimTranscript); // Optional: For displaying interim results if needed
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.error("Speech Recognition Error:", event.error);
+    };
   };
 
-  // Stop listening
   const stopListening = (): void => {
     setListening(false);
     recognition.stop();
   };
 
-  // Clear the chat history
   const clearChat = (): void => {
     setTranscript("");
     setConversation([]);
-    setMessageInput("");
   };
 
-  // Handle sending the message
   const handleSendMessage = async (): Promise<void> => {
     if (!messageInput.trim()) return;
 
@@ -189,8 +193,8 @@ const ChatVoiceAndText: React.FC = () => {
     setConversation((prev) => [...prev, { sender: "AI", message: aiResponse }]);
   };
 
-  // Mock AI response (replace this with your actual backend API call)
   const getAIResponse = async (userMessage: string): Promise<string> => {
+    // Mock AI response (replace with real API integration)
     return `You asked: "${userMessage}". Here's some detailed AI information...`;
   };
 
@@ -198,11 +202,11 @@ const ChatVoiceAndText: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-200 flex flex-col items-center justify-start p-6">
       <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">
-          AI Doctor
+          AI Doctor Chat System
         </h1>
 
         {/* Chat Display */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-inner h-[500px] overflow-y-auto mb-6 space-y-4">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-inner h-96 overflow-y-auto mb-6 space-y-4">
           {conversation.map((chat, index) => (
             <div
               key={index}
@@ -223,14 +227,6 @@ const ChatVoiceAndText: React.FC = () => {
           ))}
         </div>
 
-        {/* Display Transcript */}
-        <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg p-8 transform transition duration-500">
-          <h2 className="text-xl font-medium text-gray-800 mb-4">Transcript</h2>
-          <div className="bg-gray-100 p-4 rounded-lg shadow-inner h-20 overflow-y-auto">
-            <p className="text-sm text-gray-700">{transcript}</p>
-          </div>
-        </div>
-
         {/* Input and Controls */}
         <div className="flex flex-col space-y-4">
           <textarea
@@ -242,7 +238,7 @@ const ChatVoiceAndText: React.FC = () => {
           <div className="flex justify-between items-center">
             <button
               onClick={handleSendMessage}
-              className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
             >
               📤 Send Message
             </button>
@@ -283,4 +279,4 @@ const ChatVoiceAndText: React.FC = () => {
   );
 };
 
-export default ChatVoiceAndText;
+export default VoiceToText;
