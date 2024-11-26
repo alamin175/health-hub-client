@@ -1,22 +1,18 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const path = require("path");
+
+module.exports = {
+  reactStrictMode: true,
+  webpack(config) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": path.resolve(__dirname, "src"),
+      "@components": path.resolve(__dirname, "src/components"),
+      "@redux": path.resolve(__dirname, "src/redux"),
+      "@utils": path.resolve(__dirname, "src/utils"),
+    };
+    return config;
+  },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
-  },
-  typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript errors during the build
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // Ignore ESLint errors during production builds
-  },
-  experimental: {
-    outputStandalone: true, // Required for Cloudflare Workers compatibility
+    domains: ["res.cloudinary.com"], // Add Cloudinary domain here
   },
 };
-
-module.exports = nextConfig;
