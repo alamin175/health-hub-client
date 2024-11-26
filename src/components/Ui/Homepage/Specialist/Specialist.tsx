@@ -1,5 +1,6 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 
 // Define a type for the specialties
 type Specialty = {
@@ -40,6 +41,8 @@ const Specialist = async () => {
         >
           {specialist.map((data) => (
             <Box
+              component={Link}
+              href={`http://localhost:3000/doctors?specialties=${data.title}`}
               sx={{
                 flex: 1,
                 textAlign: "center",
@@ -74,6 +77,8 @@ const Specialist = async () => {
           }}
         >
           <Button
+            LinkComponent={"a"}
+            href="http://localhost:3000/doctors"
             variant="outlined"
             sx={{ color: "#0E82FD", borderColor: "#0E82FD" }}
           >

@@ -99,7 +99,13 @@ const TopRatedDoctor = async () => {
                   }}
                 >
                   <Button>Book Now</Button>
-                  <Button variant="outlined">View Profile</Button>
+                  <Button
+                    LinkComponent={"a"}
+                    href={`http://localhost:3000/doctors/${doctor.id}`}
+                    variant="outlined"
+                  >
+                    View Profile
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
