@@ -43,7 +43,6 @@ const DoctorsProfilePage = () => {
         const doctorData = await fetchDoctor(Array.isArray(id) ? id[0] : id);
         setDoctor(doctorData);
       } catch (err) {
-        // @ts-expect-error not require
         setError(err.message || "Failed to fetch doctor information");
       } finally {
         setLoading(false);
