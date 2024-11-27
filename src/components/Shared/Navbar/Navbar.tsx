@@ -32,21 +32,21 @@ const Navbar = () => {
           spacing={2}
           sx={{ color: "secondary.main", gap: "20px" }}
         >
-          <Typography variant="h6" component={Link} href="/">
+          <Typography variant="h6" component={Link} href="/consultation">
             Consultation
           </Typography>
-          <Typography variant="h6" component={Link} href="/about">
+          <Typography variant="h6" component={Link} href="/health-plan">
             Health Plans
           </Typography>
-          <Typography variant="h6" component={Link} href="/contact">
+          <Typography variant="h6" component={Link} href="/medicine">
             Medicine
           </Typography>
-          <Typography variant="h6" component={Link} href="/visitor">
+          <Typography variant="h6" component={Link} href="/diagnostics">
             Diagnostics
           </Typography>
-          <Typography variant="h6" component={Link} href="/login">
+          {/* <Typography variant="h6" component={Link} href="/login">
             NGOs
-          </Typography>
+          </Typography> */}
         </Stack>
         <AuthButton />
       </Stack>
