@@ -1,9 +1,8 @@
 import { authKey } from "@/constance/authKey";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtDecode } from "jwt-decode"; // Recommended: use a proper JWT decoding library
+import { jwtDecode } from "jwt-decode";
 
-// Define route groups
 const AuthRoutes = ["/login", "/register"];
 const commonPrivateRoutes = [
   "/dashboard",
@@ -22,18 +21,18 @@ type Role = keyof typeof roleBasedPrivateRoutes;
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Access cookies
+  // Retrieve auth token from cookies
   const authToken = request.cookies.get(authKey)?.value;
 
-  // No token for non-auth routes - redirect to login
+  // Handle unauthenticated access
   if (!authToken) {
     if (AuthRoutes.includes(pathname)) {
       return NextResponse.next(); // Allow public routes
     }
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/login", request.url)); // Redirect to login
   }
 
-  // Allow access to common private routes
+  // Allow common private routes for authenticated users
   if (
     commonPrivateRoutes.some(
       (route) => pathname === route || pathname.startsWith(route)
@@ -42,26 +41,34 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Decode JWT token
+  // Decode JWT token to extract user role
   let decodedData: { role?: Role } | null = null;
   try {
     decodedData = jwtDecode<{ role?: Role }>(authToken);
   } catch (error) {
     // Invalid token - force logout
+    console.error("Invalid token, redirecting to login:", error);
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   const role = decodedData?.role;
 
-  // Role-based access control
-  if (role && roleBasedPrivateRoutes[role]) {
-    const routes = roleBasedPrivateRoutes[role];
-    if (routes.some((route) => pathname.match(route))) {
-      return NextResponse.next();
-    }
+  // Ensure the user has a role
+  if (!role || !roleBasedPrivateRoutes[role]) {
+    console.error("No valid role found, redirecting to home.");
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Default: redirect to home if no access
+  // Check if the requested route matches the user's allowed routes
+  const allowedRoutes = roleBasedPrivateRoutes[role];
+  if (allowedRoutes.some((route) => route.test(pathname))) {
+    return NextResponse.next(); // Allow access
+  }
+
+  // Role does not have access to this route
+  console.error(
+    `Access denied: Role '${role}' attempted to access '${pathname}'`
+  );
   return NextResponse.redirect(new URL("/", request.url));
 }
 
