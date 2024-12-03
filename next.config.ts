@@ -1,24 +1,26 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "**", // Allows images from any HTTPS source
       },
     ],
   },
   typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript errors during the build
+    ignoreBuildErrors: true, // Ignore TypeScript errors temporarily
   },
   eslint: {
-    ignoreDuringBuilds: true, // Ignore ESLint errors during production builds
+    ignoreDuringBuilds: true, // Ignore ESLint errors temporarily
   },
   experimental: {
-    outputStandalone: true, // Required for Cloudflare Workers compatibility
+    middlewarePrefetch: "flexible", // Optimize middleware prefetching
+    outputStandalone: true, // For Docker/Cloudflare Workers
   },
+  reactStrictMode: true, // Enforce strict React rules
+  swcMinify: true, // Use SWC compiler for faster builds
 };
 
 export default nextConfig;
