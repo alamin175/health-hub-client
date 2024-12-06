@@ -76,14 +76,14 @@ const PatientProfile = () => {
             )}
           </Box>
 
-          <Button
+          {/* <Button
             endIcon={<ModeEditIcon />}
             variant="contained"
             component={Link}
             href={`/dashboard/patient/${data?.data?.id}`}
           >
             Edit Profile
-          </Button>
+          </Button> */}
         </Grid>
 
         {/* Profile Information Section */}
